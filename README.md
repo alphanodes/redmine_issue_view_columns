@@ -16,7 +16,7 @@ Basic functionality
 Compatibility
 -------------
 
-Plugin is compatible with Redmine 3.4.x and 4.0.x
+Plugin is compatible with Redmine 3.4.x and 4.0.x on MariaDB 10.3.14
 
 Installation
 ------------
@@ -25,7 +25,7 @@ Installation
 ```
 $ git clone https://github.com/kenan3008/redmine_issue_view_columns.git
 ```
-* From redmine root directory, run: 
+* From redmine root directory, run:
 ```
 $ rake redmine:plugins:migrate RAILS_ENV=production NAME=redmine_issue_view_columns
 ```

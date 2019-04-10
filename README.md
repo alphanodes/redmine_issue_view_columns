@@ -1,4 +1,4 @@
-# Redmine Issue View Columns Plugin
+# Redmine Issue View Columns Plugin [![Maintainability](https://api.codeclimate.com/v1/badges/48f3036ae9ede022185b/maintainability)](https://codeclimate.com/github/kenan3008/redmine_issue_view_columns/maintainability)
 
 Redmine plugin to customize shown columns in subtasks and related issues on issue page
 

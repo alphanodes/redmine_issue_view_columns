@@ -2,6 +2,8 @@
 
 Redmine plugin to customize shown columns in subtasks and related issues on issue page
 
+![screenshot](https://raw.github.com/kenan3008/redmine_issue_view_columns/gh-pages/screenshot.png)
+
 Basic functionality
 -------------------
 

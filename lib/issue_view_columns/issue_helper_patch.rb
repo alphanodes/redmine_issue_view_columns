@@ -53,10 +53,12 @@ module IssueHelperPatch
       s << content_tag('th style="text-align:center"', l(:field_status))
 
       columns_list.each do |column|
+        next if column.caption == "Status"
         s << content_tag("th", column.caption)
       end
 
       s << content_tag('th style="text-align:right"', l(:label_relations))
+      s << content_tag('th style="text-align:right"', l(:label_actions))
 
       relations.each do |relation|
         other_issue = relation.other_issue(issue)
@@ -74,10 +76,12 @@ module IssueHelperPatch
                         content_tag("td", other_issue.status, class: "status")
 
         columns_list.each do |column|
+          next if column.name == :status
           field_content << content_tag("td", column_content(column, other_issue), class: "#{column.css_classes}")
         end
 
         field_content << content_tag("td", link, class: "buttons")
+        field_content << content_tag('td', link_to_context_menu, :class => 'buttons')
 
         s << content_tag("tr", field_content,
                          id: "relation-#{relation.id}",

@@ -2,3 +2,4 @@ bs:
   label_select_columns: "Odaberite kolone za podzadatke i vezane tikete"
   issue_view_columns_settings: "Kolone tiketa"
   label_issue_columns_created_sucessfully: "Kolone uspješno ažurirane"
+  label_actions: "Akcija"

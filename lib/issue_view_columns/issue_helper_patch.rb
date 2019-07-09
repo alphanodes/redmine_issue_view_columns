@@ -17,6 +17,10 @@ module IssueHelperPatch
         s << content_tag("th", column.caption)
       end
 
+      if (Redmine::VERSION::MAJOR >= 4)
+        s << content_tag('th style="text-align:right"', l(:label_actions))
+      end
+
       # set data
       issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
         css = "issue issue-#{child.id} hascontextmenu #{child.css_classes}"
@@ -27,6 +31,10 @@ module IssueHelperPatch
 
         columns_list.each do |column|
           field_content << content_tag("td", column_content(column, child), class: "#{column.css_classes}")
+        end
+
+        if (Redmine::VERSION::MAJOR >= 4)
+          field_content << content_tag('td', link_to_context_menu, class: 'buttons', style: "text-align:right")
         end
 
         field_values << content_tag("tr", field_content, class: css).html_safe
@@ -58,7 +66,10 @@ module IssueHelperPatch
       end
 
       s << content_tag('th style="text-align:right"', l(:label_relations))
-      s << content_tag('th style="text-align:right"', l(:label_actions))
+
+      if (Redmine::VERSION::MAJOR >= 4)
+        s << content_tag('th style="text-align:right"', l(:label_actions))
+      end
 
       relations.each do |relation|
         other_issue = relation.other_issue(issue)
@@ -81,7 +92,10 @@ module IssueHelperPatch
         end
 
         field_content << content_tag("td", link, class: "buttons")
-        field_content << content_tag('td', link_to_context_menu, :class => 'buttons')
+
+        if (Redmine::VERSION::MAJOR >= 4)
+          field_content << content_tag('td', link_to_context_menu, :class => 'buttons', style: "text-align:right")
+        end
 
         s << content_tag("tr", field_content,
                          id: "relation-#{relation.id}",

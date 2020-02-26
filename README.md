@@ -18,7 +18,7 @@ Basic functionality
 Compatibility
 -------------
 
-Plugin is compatible with Redmine 3.4.x and 4.0.x on MariaDB 10.3.14
+Plugin is compatible with Redmine 3.4.x and 4.0.x on MariaDB 10.3.14. Newer versions might work but these haven't been tested so far.
 
 Installation
 ------------

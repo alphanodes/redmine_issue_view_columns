@@ -1,4 +1,3 @@
-require_dependency "issue_view_columns/issue_helper_patch"
 require_dependency "issue_view_columns/project_helper_patch"
 
 Redmine::Plugin.register :redmine_issue_view_columns do
@@ -16,3 +15,4 @@ end
 
 # helper methods needed for the Settings page of the project also
 ProjectsController.send :helper, IssueViewColumnsHelper
+IssuesController.send :helper, IssueViewColumnsIssuesHelper

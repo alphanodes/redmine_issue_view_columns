@@ -64,11 +64,7 @@ module IssueViewColumnsIssuesHelper
       s << content_tag("th", column.caption)
     end
 
-    s << content_tag('th style="text-align:right"', l(:label_relations))
-
-    if (Redmine::VERSION::MAJOR >= 4)
-      s << content_tag('th style="text-align:right"', l(:label_actions))
-    end
+    s << content_tag('th style="text-align:right"', l(:label_actions))
 
     relations.each do |relation|
       other_issue = relation.other_issue(issue)
@@ -90,11 +86,9 @@ module IssueViewColumnsIssuesHelper
         field_content << content_tag("td", column_content(column, other_issue), class: "#{column.css_classes}")
       end
 
-      field_content << content_tag("td", link, class: "buttons")
-
-      if (Redmine::VERSION::MAJOR >= 4)
-        field_content << content_tag('td', link_to_context_menu, :class => 'buttons', style: "text-align:right")
-      end
+      buttons = link
+      buttons << link_to_context_menu if Redmine::VERSION::MAJOR >= 4
+      field_content << content_tag('td', buttons, class: 'buttons', style: 'text-align: right')
 
       s << content_tag("tr", field_content,
                        id: "relation-#{relation.id}",

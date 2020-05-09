@@ -75,7 +75,7 @@ module IssueViewColumnsIssuesHelper
                                         method: :delete,
                                         data: { confirm: l(:text_are_you_sure) },
                                         title: l(:label_relation_delete),
-                                        class: "icon-only icon-link-break") : nil
+                                        class: "icon-only icon-link-break") : ""
 
       field_content = content_tag("td", check_box_tag("ids[]", other_issue.id, false, id: nil), class: "checkbox") +
                       content_tag("td", relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe, class: "subject", style: "width: 30%") +
@@ -88,7 +88,7 @@ module IssueViewColumnsIssuesHelper
 
       buttons = link
       buttons << link_to_context_menu if Redmine::VERSION::MAJOR >= 4
-      field_content << content_tag('td', buttons, class: 'buttons', style: 'text-align: right')
+      field_content << content_tag('td', buttons, {class: 'buttons', style: 'text-align: right'}, false)
 
       s << content_tag("tr", field_content,
                        id: "relation-#{relation.id}",

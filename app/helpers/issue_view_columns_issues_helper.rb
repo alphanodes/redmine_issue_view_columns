@@ -23,7 +23,7 @@ module IssueViewColumnsIssuesHelper
 
     # set data
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
-      tr_classes = +"hascontextmenu #{child.css_classes}"
+      tr_classes = +"hascontextmenu #{child.css_classes} #{cycle 'odd', 'even'}"
       tr_classes << " idnt idnt-#{level}" if level.positive?
       buttons = if manage_relations
                   link_to l(:label_delete_link_to_subtask),
@@ -81,7 +81,7 @@ module IssueViewColumnsIssuesHelper
 
     relations.each do |relation|
       other_issue = relation.other_issue issue
-      tr_classes = "hascontextmenu #{other_issue.css_classes}"
+      tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'}"
       buttons = if manage_relations
                   link_to l(:label_relation_delete),
                           relation_path(relation),

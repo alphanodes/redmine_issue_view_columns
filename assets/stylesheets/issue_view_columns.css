@@ -4,3 +4,13 @@
 #selected_c {
     width: 250px !important;
 }
+
+@media screen and (max-width: 899px) {
+  #issue_tree .issue > td:not(.checkbox), #relations .issue > td:not(.checkbox) {
+    float: none;
+  }
+
+  #issue_tree .issues, #relations .issues {
+    border-spacing: 0 0;
+  }
+}

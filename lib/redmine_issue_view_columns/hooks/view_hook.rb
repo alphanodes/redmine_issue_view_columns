@@ -9,9 +9,7 @@
 module RedmineIssueViewColumns
   module Hooks
     class ViewHook < Redmine::Hook::ViewListener
-      def view_issues_show_description_bottom(_context = {})
-        stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
-      end
+      render_on :view_issues_show_description_bottom, partial: 'issues/columns_issue_description_bottom'
     end
   end
 end

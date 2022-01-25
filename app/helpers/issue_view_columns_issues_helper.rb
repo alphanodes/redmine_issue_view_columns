@@ -8,7 +8,7 @@ module IssueViewColumnsIssuesHelper
 
     # continue here if there are fields defined
     field_values = +''
-    s = +'<div class="autoscroll"><table class="list issues odd-even"><thead>'
+    s = +'<div class="autoscroll"><table class="list issues odd-even view-columns"><thead>'
 
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
 
@@ -65,7 +65,7 @@ module IssueViewColumnsIssuesHelper
 
     manage_relations = User.current.allowed_to? :manage_issue_relations, issue.project
 
-    s = +'<div class="autoscroll"><table class="list issues odd-even">'
+    s = +'<div class="autoscroll"><table class="list issues odd-even view-columns">'
 
     # set header with columns names
     s << content_tag('th', l(:field_subject), class: 'subject')

@@ -6,11 +6,14 @@
 }
 
 @media screen and (max-width: 899px) {
-  #issue_tree .issue > td:not(.checkbox), #relations .issue > td:not(.checkbox) {
+  #issue_tree .view-columns .issue > td:not(.checkbox),
+  #relations .view-columns .issue > td:not(.checkbox) {
+    display: revert;
     float: none;
   }
 
-  #issue_tree .issues, #relations .issues {
+  #issue_tree .issues.view-columns ,
+  #relations .issues.view-columns {
     border-spacing: 0 0;
   }
 }

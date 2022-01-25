@@ -69,12 +69,12 @@ module IssueViewColumnsIssuesHelper
     s << content_tag('th', l(:field_status), class: 'status')
 
     columns_list.each do |column|
-      next if column.caption == 'Status'
+      next if column.name == :status
 
       s << content_tag('th', column.caption, class: column.name)
     end
 
-    s << content_tag('th style="text-align:right"', l(:label_actions), class: 'buttons')
+    s << content_tag('th', l(:label_actions), class: 'buttons')
 
     relations.each do |relation|
       other_issue = relation.other_issue issue

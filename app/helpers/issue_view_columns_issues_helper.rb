@@ -8,7 +8,9 @@ module IssueViewColumnsIssuesHelper
 
     # continue here if there are fields defined
     field_values = +''
-    s = +'<table class="list issues odd-even">'
+    s = +'<div class="autoscroll"><table class="list issues odd-even">'
+
+    manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
 
     # set header - columns names
     s << content_tag('th style="text-align:left"', l(:field_subject))
@@ -22,20 +24,34 @@ module IssueViewColumnsIssuesHelper
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
       css = "issue issue-#{child.id} hascontextmenu #{child.css_classes}"
       css << " idnt idnt-#{level}" if level.positive?
+      buttons = if manage_relations
+                  link_to l(:label_delete_link_to_subtask),
+                          issue_path({ id: child.id,
+                                       issue: { parent_issue_id: '' },
+                                       back_url: issue_path(issue.id),
+                                       no_flash: '1' }),
+                          method: :put,
+                          data: { confirm: l(:text_are_you_sure) },
+                          title: l(:label_delete_link_to_subtask),
+                          class: 'icon-only icon-link-break'
+                else
+                  ''.html_safe
+                end
+      buttons << link_to_context_menu
 
       field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', link_to_issue(child, project: (issue.project_id != child.project_id)), class: "subject", style: "width: 30%")
+                      content_tag('td', link_to_issue(child, project: (issue.project_id != child.project_id)), class: 'subject', style: 'width: 30%')
 
       columns_list.each do |column|
         field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s)
       end
 
-      field_content << content_tag('td', link_to_context_menu, class: 'buttons', style: 'text-align: right')
+      field_content << content_tag('td', buttons, class: 'buttons')
       field_values << content_tag('tr', field_content, class: css).html_safe
     end
 
     s << field_values
-    s << '</table>'
+    s << '</table></div>'
     s.html_safe
   end
 
@@ -44,7 +60,9 @@ module IssueViewColumnsIssuesHelper
     columns_list = get_fields_for_project issue
     return super if columns_list.count.zero?
 
-    s = '<table class="list issues odd-even">'
+    manage_relations = User.current.allowed_to? :manage_issue_relations, issue.project
+
+    s = +'<div class="autoscroll"><table class="list issues odd-even">'
 
     # set header with columns names
     s << content_tag('th style="text-align:left"', l(:field_subject))
@@ -61,17 +79,18 @@ module IssueViewColumnsIssuesHelper
     relations.each do |relation|
       other_issue = relation.other_issue issue
       css = "issue hascontextmenu #{other_issue.css_classes}"
-      link = if User.current.allowed_to? :manage_issue_relations, issue.project
-               link_to l(:label_relation_delete),
-                       relation_path(relation),
-                       remote: true,
-                       method: :delete,
-                       data: { confirm: l(:text_are_you_sure) },
-                       title: l(:label_relation_delete),
-                       class: 'icon-only icon-link-break'
-             else
-               ''
-             end
+      buttons = if manage_relations
+                  link_to l(:label_relation_delete),
+                          relation_path(relation),
+                          remote: true,
+                          method: :delete,
+                          data: { confirm: l(:text_are_you_sure)},
+                          title: l(:label_relation_delete),
+                          class: 'icon-only icon-link-break'
+                else
+                  ''.html_safe
+                end
+      buttons << link_to_context_menu
 
       field_content = content_tag('td', check_box_tag('ids[]', other_issue.id, false, id: nil), class: 'checkbox') +
                       content_tag('td', relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe, class: 'subject', style: 'width: 30%') +
@@ -83,16 +102,12 @@ module IssueViewColumnsIssuesHelper
         field_content << content_tag('td', column_content(column, other_issue), class: column.css_classes.to_s)
       end
 
-      buttons = link
-      buttons << link_to_context_menu
-      field_content << content_tag('td', buttons, { class: 'buttons', style: 'text-align: right' }, false)
+      field_content << content_tag('td', buttons, class: 'buttons')
 
-      s << content_tag('tr', field_content,
-                       id: "relation-#{relation.id}",
-                       class: css)
+      s << content_tag('tr', field_content, id: "relation-#{relation.id}", class: css)
     end
 
-    s << '</table>'
+    s << '</table></div>'
     s.html_safe
   end
 

@@ -4,9 +4,3 @@
 #selected_c {
     width: 250px !important;
 }
-
-@media screen and (max-width: 799px) {
-    table.list.issues>tbody>tr:first-child {
-        display: none;
-    }
-}

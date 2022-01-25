@@ -8,7 +8,7 @@ module IssueViewColumnsIssuesHelper
 
     # continue here if there are fields defined
     field_values = +''
-    s = +'<div class="autoscroll"><table class="list issues odd-even">'
+    s = +'<div class="autoscroll"><table class="list issues odd-even"><thead>'
 
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
 
@@ -19,11 +19,12 @@ module IssueViewColumnsIssuesHelper
     end
 
     s << content_tag('th', l(:label_actions), class: 'buttons')
+    s << '</thead><tbody>'
 
     # set data
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
-      css = "issue issue-#{child.id} hascontextmenu #{child.css_classes}"
-      css << " idnt idnt-#{level}" if level.positive?
+      tr_classes = +"hascontextmenu #{child.css_classes}"
+      tr_classes << " idnt idnt-#{level}" if level.positive?
       buttons = if manage_relations
                   link_to l(:label_delete_link_to_subtask),
                           issue_path({ id: child.id,
@@ -40,18 +41,20 @@ module IssueViewColumnsIssuesHelper
       buttons << link_to_context_menu
 
       field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', link_to_issue(child, project: (issue.project_id != child.project_id)), class: 'subject', style: 'width: 30%')
+                      content_tag('td', link_to_issue(child, project: (issue.project_id != child.project_id)), class: 'subject')
 
       columns_list.each do |column|
         field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s)
       end
 
       field_content << content_tag('td', buttons, class: 'buttons')
-      field_values << content_tag('tr', field_content, class: css).html_safe
+      field_values << content_tag('tr', field_content,
+                                  class: tr_classes,
+                                  id: "issue-#{child.id}").html_safe
     end
 
     s << field_values
-    s << '</table></div>'
+    s << '</tbody></table></div>'
     s.html_safe
   end
 
@@ -78,7 +81,7 @@ module IssueViewColumnsIssuesHelper
 
     relations.each do |relation|
       other_issue = relation.other_issue issue
-      css = "issue hascontextmenu #{other_issue.css_classes}"
+      tr_classes = "hascontextmenu #{other_issue.css_classes}"
       buttons = if manage_relations
                   link_to l(:label_relation_delete),
                           relation_path(relation),
@@ -93,7 +96,7 @@ module IssueViewColumnsIssuesHelper
       buttons << link_to_context_menu
 
       field_content = content_tag('td', check_box_tag('ids[]', other_issue.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe, class: 'subject', style: 'width: 30%') +
+                      content_tag('td', relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe, class: 'subject') +
                       content_tag('td', other_issue.status, class: 'status')
 
       columns_list.each do |column|
@@ -104,7 +107,9 @@ module IssueViewColumnsIssuesHelper
 
       field_content << content_tag('td', buttons, class: 'buttons')
 
-      s << content_tag('tr', field_content, id: "relation-#{relation.id}", class: css)
+      s << content_tag('tr', field_content,
+                       id: "relation-#{relation.id}",
+                       class: tr_classes)
     end
 
     s << '</table></div>'

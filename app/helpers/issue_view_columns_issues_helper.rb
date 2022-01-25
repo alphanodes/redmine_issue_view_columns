@@ -13,12 +13,12 @@ module IssueViewColumnsIssuesHelper
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
 
     # set header - columns names
-    s << content_tag('th style="text-align:left"', l(:field_subject))
+    s << content_tag('th', l(:field_subject), class: 'subject')
     columns_list.each do |column|
-      s << content_tag('th', column.caption)
+      s << content_tag('th', column.caption, class: column.name)
     end
 
-    s << content_tag('th style="text-align:right"', l(:label_actions))
+    s << content_tag('th', l(:label_actions), class: 'buttons')
 
     # set data
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
@@ -65,16 +65,16 @@ module IssueViewColumnsIssuesHelper
     s = +'<div class="autoscroll"><table class="list issues odd-even">'
 
     # set header with columns names
-    s << content_tag('th style="text-align:left"', l(:field_subject))
-    s << content_tag('th style="text-align:center"', l(:field_status))
+    s << content_tag('th', l(:field_subject), class: 'subject')
+    s << content_tag('th', l(:field_status), class: 'status')
 
     columns_list.each do |column|
       next if column.caption == 'Status'
 
-      s << content_tag('th', column.caption)
+      s << content_tag('th', column.caption, class: column.name)
     end
 
-    s << content_tag('th style="text-align:right"', l(:label_actions))
+    s << content_tag('th style="text-align:right"', l(:label_actions), class: 'buttons')
 
     relations.each do |relation|
       other_issue = relation.other_issue issue

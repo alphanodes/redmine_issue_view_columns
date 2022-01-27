@@ -9,4 +9,4 @@ de:
   label_view_columns_scope_without_closed: Geschlossene Tickets optional ausblenden
   label_view_columns_scope_without_closed_by_default: Geschlossene Tickets standardmässig ausblenden
   permission_manage_issue_view_columns: Ausgabespalten verwalten
-  project_module_issue_view_columns: Ticket Ausgabespalten
+  project_module_issue_view_columns: Spalten in Ticketansicht

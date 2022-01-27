@@ -2,7 +2,7 @@
 
 class IssueViewColumnsController < ApplicationController
   include QueriesHelper
-  include IssueViewColumnsHelper
+  include IssueViewColumnsProjectsHelper
   before_action :find_project_by_project_id
   before_action :build_query_for_project
 

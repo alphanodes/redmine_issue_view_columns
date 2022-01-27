@@ -8,3 +8,4 @@ en:
   label_view_columns_scope_without_closed: Geschlossene Tickets können ausgeblenden werden
   label_view_columns_scope_without_closed_by_default: Geschlossene Tickets sind standardmässig ausgeblendet
   label_hide_closed_issues: Hide closed isssues
+  info_view_columns_issue_scope: Wenn viele Untertickets oder "Zugehörige Tickets" zum Einsatz kommen, wird empfohlen die geschlossenen Tickets aus Performance-Gründen standardmässig auszublenden.

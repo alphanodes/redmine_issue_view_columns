@@ -1,0 +1,16 @@
+= stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
+= javascript_include_tag 'issue_view_default_columns', plugin: 'redmine_issue_view_columns'
+
+p
+  = additionals_settings_select :issue_scope,
+     options_for_select({ l(:label_view_columns_scope_all) => 'all',
+                          l(:label_view_columns_scope_without_closed) => 'without_closed',
+                          l(:label_view_columns_scope_without_closed_by_default) => 'without_closed_by_default' }, @settings[:issue_scope]),
+                        label: l(:label_view_columns_issue_scope)
+
+br
+
+= render partial: 'additionals/settings_list_defaults', locals: { query_class: IssueQuery,
+                                                                  query_type: 'issue',
+                                                                  legend: l(:label_select_isue_view_default_columns),
+                                                                  totalable_columns: false }

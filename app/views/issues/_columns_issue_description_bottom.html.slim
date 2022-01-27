@@ -1,2 +1,14 @@
 - content_for :header_tags do
   = stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
+
+- issue_scope = RedmineIssueViewColumns.setting :issue_scope
+- if %w[without_closed_by_default without_closed].include? issue_scope
+  javascript:
+    $(function() {
+      if($('#issue_tree table.issues tr.issue.closed').length || (1==#{issue_columns_with_closed_issues? ? '0' : '1'})){
+        $('#issue_tree .contextual').prepend("#{escape_javascript link_to_closed_issues(@issue, issue_scope)}");
+      }
+      if($('#relations table.issues tr.issue.closed').length || (1==#{issue_columns_with_closed_issues? ? '0' : '1'})){
+        $('#relations .contextual').prepend("#{escape_javascript link_to_closed_issues(@issue, issue_scope)}");
+      }
+    });

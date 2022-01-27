@@ -18,13 +18,15 @@ module IssueViewColumnsIssuesHelper
       s << content_tag('th', column.caption, class: column.name)
     end
 
-    s << content_tag('th', l(:label_actions), class: 'buttons')
+    s << content_tag('th', '', class: 'buttons')
     s << '</thead><tbody>'
 
     # set data
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
       tr_classes = +"hascontextmenu #{child.css_classes} #{cycle 'odd', 'even'}"
       tr_classes << " idnt idnt-#{level}" if level.positive?
+      next if child.closed? && !issue_columns_with_closed_issues?
+
       buttons = if manage_relations
                   link_to l(:label_delete_link_to_subtask),
                           issue_path({ id: child.id,
@@ -77,7 +79,7 @@ module IssueViewColumnsIssuesHelper
       s << content_tag('th', column.caption, class: column.name)
     end
 
-    s << content_tag('th', l(:label_actions), class: 'buttons')
+    s << content_tag('th', '', class: 'buttons')
 
     relations.each do |relation|
       other_issue = relation.other_issue issue
@@ -87,7 +89,7 @@ module IssueViewColumnsIssuesHelper
                           relation_path(relation),
                           remote: true,
                           method: :delete,
-                          data: { confirm: l(:text_are_you_sure)},
+                          data: { confirm: l(:text_are_you_sure) },
                           title: l(:label_relation_delete),
                           class: 'icon-only icon-link-break'
                 else
@@ -116,27 +118,57 @@ module IssueViewColumnsIssuesHelper
     s.html_safe
   end
 
+  def issue_columns_with_closed_issues?
+    return @issue_columns_with_closed_issues if defined?(issue_columns_with_closed_issues)
+
+    issue_scope = RedmineIssueViewColumns.setting :issue_scope
+    return true if %w[without_closed_by_default without_closed].exclude? issue_scope
+
+    @issue_columns_with_closed_issues = if issue_scope == 'without_closed_by_default'
+                                          RedminePluginKit.true? params[:with_closed_issues]
+                                        else
+                                          RedminePluginKit.false? params[:without_closed_issues]
+                                        end
+  end
+
+  def link_to_closed_issues(issue, issue_scope)
+    css_class = 'closed-issue-switcher'
+    if issue_scope == 'without_closed_by_default'
+      if issue_columns_with_closed_issues?
+        link_to l(:label_hide_closed_issues), issue_path(issue), class: "#{css_class} hide-switch"
+      else
+        link_to l(:label_show_closed_issues), issue_path(issue, with_closed_issues: true), class: "#{css_class} show-switch"
+      end
+    elsif issue_columns_with_closed_issues?
+      link_to l(:label_hide_closed_issues), issue_path(issue, without_closed_issues: true), class: "#{css_class} hide-switch"
+    else
+      link_to l(:label_show_closed_issues), issue_path(issue), class: "#{css_class} show-switch"
+    end
+  end
+
   private
 
   def get_fields_for_project(issue)
     query = IssueQuery.new
     query.project = issue.project
     available_fields = query.available_inline_columns
-    subtask_fields = []
 
     all_fields = if issue.project.module_enabled? :issue_view_columns
                    IssueViewColumns.where(project_id: issue.project_id).sort_by(&:order).collect(&:ident) || []
                  else
-                   Setting.plugin_redmine_issue_view_columns['issue_view_default_columns'] || []
+                   default_setting = RedmineIssueViewColumns.setting :issue_list_defaults
+                   default_setting.present? ? default_setting['column_names'] : []
                  end
 
     first_cols = %w[tracker subject]
+    subtask_fields = []
     all_fields.each do |field|
       next if first_cols.include? field
 
       proj_field = available_fields.select { |f| f.name.to_s == field }
       subtask_fields << proj_field[0] if proj_field.count.positive?
     end
+
     subtask_fields # this should be an array of QueryColumn
   end
 end

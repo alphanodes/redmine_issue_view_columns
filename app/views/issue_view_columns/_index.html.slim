@@ -1,0 +1,11 @@
+= stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
+= javascript_include_tag 'issue_view_default_columns', plugin: 'redmine_issue_view_columns'
+
+= form_tag update_issue_view_columns_path(nil), method: :post do
+  = hidden_field_tag 'project_id', @project.id
+  fieldset.box
+    legend = l :label_select_columns
+    = render_query_columns_selection build_query_for_project
+
+  = submit_tag t(:button_save)
+  = submit_tag t(:button_cancel)

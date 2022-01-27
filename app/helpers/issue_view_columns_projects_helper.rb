@@ -8,7 +8,7 @@ module IssueViewColumnsProjectsHelper
        @project.module_enabled?(:issue_view_columns)
       tabs << { name: 'issue_view_columns',
                 action: :issue_view_columns,
-                partial: 'issue_view_columns/index',
+                partial: 'projects/settings/issue_view_columns',
                 label: :issue_view_columns_settings }
     end
 

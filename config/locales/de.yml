@@ -1,11 +1,12 @@
 de:
-  label_select_columns: "Spalten für Teilaufgaben und verwandte Themen auswählen"
-  issue_view_columns_settings: "Ausgabespalten"
+  info_view_columns_issue_scope: Wenn viele Untertickets oder "Zugehörige Tickets" zum Einsatz kommen, wird empfohlen die geschlossenen Tickets aus Performance-Gründen standardmässig auszublenden.
+  issue_view_columns_settings: Ticket Ausgabespalten
+  label_hide_closed_issues: Geschlossene Tickets ausblenden
   label_issue_columns_created_sucessfully: "Spalten erfolgreich aktualisiert"
-  label_view_columns_issue_scope: Ansicht Tickets für Untertickets
   label_select_isue_view_default_columns: Select default columns for issue's subtasks and related issues
+  label_view_columns_issue_scope: Ansicht Tickets für Untertickets
   label_view_columns_scope_all: Alle Tickets
   label_view_columns_scope_without_closed: Geschlossene Tickets können ausgeblenden werden
   label_view_columns_scope_without_closed_by_default: Geschlossene Tickets sind standardmässig ausgeblendet
-  label_hide_closed_issues: Geschlossene Tickets ausblenden
-  info_view_columns_issue_scope: Wenn viele Untertickets oder "Zugehörige Tickets" zum Einsatz kommen, wird empfohlen die geschlossenen Tickets aus Performance-Gründen standardmässig auszublenden.
+  permission_manage_issue_view_columns: Ausgabespalten verwalten
+  project_module_issue_view_columns: Ticket Ausgabespalten

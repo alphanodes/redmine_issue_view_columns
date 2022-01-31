@@ -16,10 +16,10 @@
   #relations .issues.view-columns {
     border-spacing: 0 0;
   }
-
-  #issue_tree .view-columns .issues td.subject,
-  #relations .view-columns .issues td.subject {
-    min-width: 290px;
-    padding-right: 1px !important;
+  
+  #issue_tree .issue > td.subject,
+  #relations .issue > td.subject {
+    min-width: 290px !important;
+    padding-right: 5px !important;
   }
 }

@@ -16,7 +16,7 @@ module IssueViewColumnsProjectsHelper
   end
 
   def build_query_for_project
-    @selected_columns = IssueViewColumns.where(project_id: @project.id)
+    @selected_columns = IssueViewColumns.where(project_id: @project)
                                         .sort_by(&:order)
                                         .collect(&:ident)
     @selected_columns = ['#'] if @selected_columns.count.zero?

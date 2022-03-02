@@ -13,7 +13,7 @@ class IssueViewColumnsController < ApplicationController
   # refactor update, it's not good to do save like this
   def update
     update_selected_columns = params[:c] || []
-    IssueViewColumns.where(project_id: params[:project_id]).delete_all
+    IssueViewColumns.where(project_id: @project).delete_all
     order = 0
     first_cols = %w[tracker subject]
     update_selected_columns.each do |col|
@@ -22,11 +22,12 @@ class IssueViewColumnsController < ApplicationController
 
       c = IssueViewColumns.new
       order += 1
-      c.project_id = params[:project_id]
+      c.project_id = @project.id
       c.ident = col
       c.order = order
       c.save
     end
+
     redirect_to :back, notice: l(:label_issue_columns_created_sucessfully)
   end
 end

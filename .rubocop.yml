@@ -59,6 +59,11 @@ Rails/HelperInstanceVariable:
 Rails/SkipsModelValidations:
   Enabled: false
 
+Rails/OutputSafety:
+  Enabled: true
+  Exclude:
+    - 'app/helpers/issue_view_columns_issues_helper.rb'
+
 Rails/Output:
   Enabled: true
   Exclude:

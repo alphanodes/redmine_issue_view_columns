@@ -1,0 +1,15 @@
+author_on_project1:
+  project_id: 1
+  name: author
+  position: 1
+
+status_on_project1:
+  project_id: 1
+  name: status
+  position: 2
+
+status_on_project2:
+  project_id: 2
+  name: status
+  position: 1
+

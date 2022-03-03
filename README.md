@@ -1,8 +1,9 @@
-# Redmine Issue View Columns Plugin [![Maintainability](https://api.codeclimate.com/v1/badges/48f3036ae9ede022185b/maintainability)](https://codeclimate.com/github/kenan3008/redmine_issue_view_columns/maintainability)
+Redmine Issue View Columns plugin for Redmine
+=============================================
+
+[![Tests](https://github.com/AlphaNodes/redmine_privacy_terms/workflows/Tests/badge.svg)](https://github.com/AlphaNodes/redmine_privacy_terms/actions?query=workflow%3A"Run+Tests) ![Run Linters](https://github.com/AlphaNodes/redmine_privacy_terms/workflows/Run%20Linters/badge.svg)
 
 Redmine plugin to customize shown columns in subtasks and related issues on issue page
-
-![screenshot](https://raw.github.com/kenan3008/redmine_issue_view_columns/gh-pages/screenshot.png)
 
 Basic functionality
 -------------------
@@ -15,25 +16,28 @@ Basic functionality
 * Related issues contain an icon that is used to remove the relation from corresponding ticket. This icon is always shown as the last column on the right side of the related issues table
 * Same configuration is applied to both subtasks and related issues sections
 
-Compatibility
--------------
+Requirements
+------------
 
-Plugin is compatible with Redmine 3.4.x and 4.0.x on MariaDB 10.3.14. Newer versions might work but these haven't been tested so far.
+* Redmine version >= 4.1.0
+* Redmine Plugin: [additionals](https://github.com/alphanodes/additionals)
+* Ruby version >= 2.6
 
 Installation
 ------------
 
-* Clone https://github.com/kenan3008/redmine_issue_view_columns or download zip to **redmine_dir/plugins/** folder
-```
-$ git clone https://github.com/kenan3008/redmine_issue_view_columns.git
-```
-* From redmine root directory, run:
-```
-$ rake redmine:plugins:migrate RAILS_ENV=production NAME=redmine_issue_view_columns
-```
-* Restart redmine
+Install ``redmine_privacy_terms`` plugin for `Redmine`
+
+    cd $REDMINE_ROOT
+    git clone git://github.com/alphanodes/redmine_issue_view_columns.git plugins/redmine_issue_view_columns
+    git clone git://github.com/alphanodes/additionals.git plugins/additionals
+    bundle install --without development test
+    bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+
+Restart Redmine (application server) and you should see the plugin show up in the Plugins page.
 
 Credits
 -------
 
-Plugin is inspired by http://www.redmine.org/plugins/subtaskcolumns and http://www.redmine.org/plugins/subtask_list_columns
+This plugins is a fork of <https://github.com/kenan3008/redmine_issue_view_columns>
+Plugin is inspired by <https://www.redmine.org/plugins/subtaskcolumns> and <https://www.redmine.org/plugins/subtask_list_columns>

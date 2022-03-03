@@ -97,8 +97,10 @@ module IssueViewColumnsIssuesHelper
                 end
       buttons << link_to_context_menu
 
+      subject_content = relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe
+
       field_content = content_tag('td', check_box_tag('ids[]', other_issue.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe, class: 'subject') +
+                      content_tag('td', subject_content, class: 'subject') +
                       content_tag('td', other_issue.status, class: 'status')
 
       columns_list.each do |column|
@@ -154,10 +156,10 @@ module IssueViewColumnsIssuesHelper
     available_fields = query.available_inline_columns
 
     all_fields = if issue.project.module_enabled? :issue_view_columns
-                   IssueViewColumns.where(project_id: issue.project_id).order(:order).pluck(:ident)
+                   IssueViewColumn.where(project_id: issue.project_id).sorted.pluck(:name)
                  else
                    columns_setting = RedmineIssueViewColumns.setting :issue_list_defaults
-                   columns_setting.present? ? columns_setting['column_names'] : []
+                   columns_setting.present? && columns_setting['column_names'].present? ? columns_setting['column_names'] : []
                  end
 
     first_cols = %w[tracker subject]

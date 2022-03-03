@@ -1,5 +1,5 @@
 ---
 
-do_not_show_closed_issues_by_default: 0
+issue_scope: all
 issue_list_defaults:
   column_names:

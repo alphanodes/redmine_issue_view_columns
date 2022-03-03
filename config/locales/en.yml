@@ -2,7 +2,7 @@ en:
   info_view_columns_issue_scope: If many sub-tasks or "related issues" are used, hide closed issues by default. For better performance.
   issue_view_columns_settings: Issue columns
   label_hide_closed_issues: Hide closed isssues
-  label_issue_columns_created_sucessfully: "Columns updated successfully"
+  label_issue_columns_created_sucessfully: Columns updated successfully
   label_select_issue_view_columns: Select columns for issue's subtasks and related issues
   label_view_columns_issue_scope: Scope for sub issues
   label_view_columns_scope_all: All issues

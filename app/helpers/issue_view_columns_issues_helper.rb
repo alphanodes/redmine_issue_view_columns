@@ -154,10 +154,10 @@ module IssueViewColumnsIssuesHelper
     available_fields = query.available_inline_columns
 
     all_fields = if issue.project.module_enabled? :issue_view_columns
-                   IssueViewColumns.where(project_id: issue.project_id).sort_by(&:order).collect(&:ident) || []
+                   IssueViewColumns.where(project_id: issue.project_id).order(:order).pluck(:ident)
                  else
-                   default_setting = RedmineIssueViewColumns.setting :issue_list_defaults
-                   default_setting.present? ? default_setting['column_names'] : []
+                   columns_setting = RedmineIssueViewColumns.setting :issue_list_defaults
+                   columns_setting.present? ? columns_setting['column_names'] : []
                  end
 
     first_cols = %w[tracker subject]

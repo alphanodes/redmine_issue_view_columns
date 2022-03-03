@@ -1,5 +1,5 @@
-#available_settings_issue_view_default_columns,
-#selected_settings_issue_view_default_columns,
+#available_settings_issue_view_columns,
+#selected_settings_issue_view_columns,
 #available_c,
 #selected_c {
     width: 250px !important;
@@ -16,9 +16,9 @@
   #relations .issues.view-columns {
     border-spacing: 0 0;
   }
-  
-  #issue_tree .issue > td.subject,
-  #relations .issue > td.subject {
+
+  #issue_tree .view-columns .issue > td.subject,
+  #relations .view-columns .issue > td.subject {
     min-width: 290px !important;
     padding-right: 5px !important;
   }

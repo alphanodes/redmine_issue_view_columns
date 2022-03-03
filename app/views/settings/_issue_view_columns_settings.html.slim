@@ -1,5 +1,5 @@
 = stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
-= javascript_include_tag 'issue_view_default_columns', plugin: 'redmine_issue_view_columns'
+= javascript_include_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
 
 p
   = additionals_settings_select :issue_scope,
@@ -14,5 +14,5 @@ br
 
 = render partial: 'additionals/settings_list_defaults', locals: { query_class: IssueQuery,
                                                                   query_type: 'issue',
-                                                                  legend: l(:label_select_isue_view_default_columns),
+                                                                  legend: l(:label_select_issue_view_columns),
                                                                   totalable_columns: false }

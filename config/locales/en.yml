@@ -3,7 +3,7 @@ en:
   issue_view_columns_settings: Issue columns
   label_hide_closed_issues: Hide closed isssues
   label_issue_columns_created_sucessfully: "Columns updated successfully"
-  label_select_isue_view_default_columns: Select default columns for issue's subtasks and related issues
+  label_select_issue_view_columns: Select columns for issue's subtasks and related issues
   label_view_columns_issue_scope: Scope for sub issues
   label_view_columns_scope_all: All issues
   label_view_columns_scope_without_closed: Closed tickets can be hidden

@@ -3,7 +3,7 @@ de:
   issue_view_columns_settings: Ticket Ausgabespalten
   label_hide_closed_issues: Geschlossene Tickets ausblenden
   label_issue_columns_created_sucessfully: "Spalten erfolgreich aktualisiert"
-  label_select_isue_view_default_columns: "Standardspalten für Untertickets und Ticketbeziehungen auswählen"
+  label_select_issue_view_columns: "Spalten für Untertickets und Ticketbeziehungen auswählen"
   label_view_columns_issue_scope: Darstellungsbereich für Untertickets
   label_view_columns_scope_all: Alle Tickets
   label_view_columns_scope_without_closed: Geschlossene Tickets optional ausblenden

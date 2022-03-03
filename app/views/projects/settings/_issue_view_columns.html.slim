@@ -1,9 +1,9 @@
 = stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
-= javascript_include_tag 'issue_view_default_columns', plugin: 'redmine_issue_view_columns'
+= javascript_include_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
 
 = form_tag project_issue_view_columns_path(@project), method: :put do
   fieldset.box
-    legend = l :label_select_isue_view_default_columns
+    legend = l :label_select_isue_view_columns
     = render_query_columns_selection build_query_for_project
 
   = submit_tag t(:button_save)

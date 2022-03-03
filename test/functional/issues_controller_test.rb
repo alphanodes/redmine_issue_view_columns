@@ -109,7 +109,7 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
   def test_show_without_closed_relations
     issue = issues :issues_004
 
-    related_issue = Issue.generate! project_id: 2
+    related_issue = Issue.generate! project_id: 2, status_id: 1
     open_relation = IssueRelation.create! issue_from: related_issue,
                                           issue_to: issue,
                                           relation_type: 'relates'
@@ -126,8 +126,27 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
       get :show, params: { id: issue.id }
 
       assert_response :success
+
       assert_select "tr#relation-#{open_relation.id}"
       assert_select "tr#relation-#{closed_relation.id}", count: 0
+    end
+  end
+
+  def test_show_without_closed_subtasks
+    issue = issues :issues_002
+    open_issue = Issue.generate! project_id: 1, parent_issue_id: issue.id, status_id: 1
+    closed_issue = Issue.generate! project_id: 1, parent_issue_id: issue.id, status_id: 5
+
+    @request.session[:user_id] = 1
+    with_plugin_settings 'redmine_issue_view_columns',
+                         issue_scope: 'without_closed_by_default',
+                         issue_list_defaults: @global_settings do
+      get :show, params: { id: issue.id }
+
+      assert_response :success
+
+      assert_select "tr#issue-#{open_issue.id}"
+      assert_select "tr#issue-#{closed_issue.id}", count: 0
     end
   end
 end

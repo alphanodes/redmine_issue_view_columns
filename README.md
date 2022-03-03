@@ -1,7 +1,7 @@
 Redmine Issue View Columns plugin for Redmine
 =============================================
 
-[![Tests](https://github.com/AlphaNodes/redmine_privacy_terms/workflows/Tests/badge.svg)](https://github.com/AlphaNodes/redmine_privacy_terms/actions?query=workflow%3A"Run+Tests) ![Run Linters](https://github.com/AlphaNodes/redmine_privacy_terms/workflows/Run%20Linters/badge.svg)
+[![Tests](https://github.com/AlphaNodes/redmine_issue_view_columns/workflows/Tests/badge.svg)](https://github.com/AlphaNodes/redmine_issue_view_columns/actions?query=workflow%3A"Run+Tests) ![Run Linters](https://github.com/AlphaNodes/redmine_issue_view_columns/workflows/Run%20Linters/badge.svg)
 
 Redmine plugin to customize shown columns in subtasks and related issues on issue page
 
@@ -19,14 +19,14 @@ Basic functionality
 Requirements
 ------------
 
-* Redmine version >= 4.1.0
+* Redmine version >= 4.2.0
 * Redmine Plugin: [additionals](https://github.com/alphanodes/additionals)
 * Ruby version >= 2.6
 
 Installation
 ------------
 
-Install ``redmine_privacy_terms`` plugin for `Redmine`
+Install ``redmine_issue_view_columns`` plugin for `Redmine`
 
     cd $REDMINE_ROOT
     git clone git://github.com/alphanodes/redmine_issue_view_columns.git plugins/redmine_issue_view_columns

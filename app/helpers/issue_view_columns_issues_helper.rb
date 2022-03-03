@@ -23,9 +23,10 @@ module IssueViewColumnsIssuesHelper
 
     # set data
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
+      next if child.closed? && !issue_columns_with_closed_issues?
+
       tr_classes = +"hascontextmenu #{child.css_classes} #{cycle 'odd', 'even'}"
       tr_classes << " idnt idnt-#{level}" if level.positive?
-      next if child.closed? && !issue_columns_with_closed_issues?
 
       buttons = if manage_relations
                   link_to l(:label_delete_link_to_subtask),
@@ -83,6 +84,8 @@ module IssueViewColumnsIssuesHelper
 
     relations.each do |relation|
       other_issue = relation.other_issue issue
+      next if other_issue.closed? && !issue_columns_with_closed_issues?
+
       tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'}"
       buttons = if manage_relations
                   link_to l(:label_relation_delete),
@@ -120,11 +123,15 @@ module IssueViewColumnsIssuesHelper
     s.html_safe
   end
 
+  def issue_scope_with_closed?(issue_scope)
+    %w[without_closed_by_default without_closed].exclude? issue_scope
+  end
+
   def issue_columns_with_closed_issues?
     return @issue_columns_with_closed_issues if defined?(issue_columns_with_closed_issues)
 
     issue_scope = RedmineIssueViewColumns.setting :issue_scope
-    return true if %w[without_closed_by_default without_closed].exclude? issue_scope
+    return true if issue_scope_with_closed? issue_scope
 
     @issue_columns_with_closed_issues = if issue_scope == 'without_closed_by_default'
                                           RedminePluginKit.true? params[:with_closed_issues]

@@ -6,7 +6,7 @@ en:
   label_select_issue_view_columns: Select columns for issue's subtasks and related issues
   label_view_columns_issue_scope: Scope for sub issues
   label_view_columns_scope_all: All issues
-  label_view_columns_scope_without_closed: Closed tickets can be hidden
-  label_view_columns_scope_without_closed_by_default: Geschlossene Tickets sind standardmässig ausgeblendet
+  label_view_columns_scope_without_closed: Closed issues can be hidden
+  label_view_columns_scope_without_closed_by_default: Closed issues are hidden by default
   permission_manage_issue_view_columns: Manage issue view columns
   project_module_issue_view_columns: Issue view columns

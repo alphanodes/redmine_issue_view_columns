@@ -5,6 +5,7 @@ loader = RedminePluginKit::Loader.new plugin_id: 'redmine_issue_view_columns'
 Redmine::Plugin.register :redmine_issue_view_columns do
   name 'Redmine Issue View Columns'
   author 'AlphaNodes GmbH'
+  url 'https://github.com/AlphaNodes/redmine_issue_view_columns'
   author_url 'https://alphanodes.com/'
   description 'Customize shown columns in subtasks and related issues on issue page'
   version RedmineIssueViewColumns::VERSION

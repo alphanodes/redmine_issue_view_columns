@@ -8,19 +8,8 @@ module IssueViewColumnsIssuesHelper
 
     # continue here if there are fields defined
     field_values = +''
-    s = +'<div class="autoscroll"><table class="list issues odd-even view-columns"><thead>'
-
+    s = table_start_for_relations columns_list
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
-
-    # set header - columns names
-    s << content_tag('th', l(:field_subject), class: 'subject')
-    columns_list.each do |column|
-      s << content_tag('th', column.caption, class: column.name)
-    end
-
-    s << content_tag('th', '', class: 'buttons')
-    s << '</thead><tbody>'
-
     # set data
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
       next if child.closed? && !issue_columns_with_closed_issues?
@@ -57,7 +46,8 @@ module IssueViewColumnsIssuesHelper
     end
 
     s << field_values
-    s << '</tbody></table></div>'
+    s << table_end_for_relations
+
     s.html_safe
   end
 
@@ -67,21 +57,7 @@ module IssueViewColumnsIssuesHelper
     return super if columns_list.count.zero?
 
     manage_relations = User.current.allowed_to? :manage_issue_relations, issue.project
-
-    s = +'<div class="autoscroll"><table class="list issues odd-even view-columns">'
-
-    # set header with columns names
-    s << content_tag('th', l(:field_subject), class: 'subject')
-    s << content_tag('th', l(:field_status), class: 'status')
-
-    columns_list.each do |column|
-      next if column.name == :status
-
-      s << content_tag('th', column.caption, class: column.name)
-    end
-
-    s << content_tag('th', '', class: 'buttons')
-
+    s = table_start_for_relations columns_list
     relations.each do |relation|
       other_issue = relation.other_issue issue
       next if other_issue.closed? && !issue_columns_with_closed_issues?
@@ -103,12 +79,9 @@ module IssueViewColumnsIssuesHelper
       subject_content = relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe
 
       field_content = content_tag('td', check_box_tag('ids[]', other_issue.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', subject_content, class: 'subject') +
-                      content_tag('td', other_issue.status, class: 'status')
+                      content_tag('td', subject_content, class: 'subject')
 
       columns_list.each do |column|
-        next if column.name == :status
-
         field_content << content_tag('td', column_content(column, other_issue), class: column.css_classes.to_s)
       end
 
@@ -119,7 +92,7 @@ module IssueViewColumnsIssuesHelper
                        class: tr_classes)
     end
 
-    s << '</table></div>'
+    s << table_end_for_relations
     s.html_safe
   end
 
@@ -156,6 +129,23 @@ module IssueViewColumnsIssuesHelper
   end
 
   private
+
+  def table_start_for_relations(columns_list)
+    s = +'<div class="autoscroll"><table class="list issues odd-even view-columns"><thead>'
+
+    s << content_tag('th', l(:field_subject), class: 'subject')
+    columns_list.each do |column|
+      s << content_tag('th', column.caption, class: column.name)
+    end
+
+    s << content_tag('th', '', class: 'buttons')
+    s << '</thead><tbody>'
+    s
+  end
+
+  def table_end_for_relations
+    '</tbody></table></div>'
+  end
 
   def get_fields_for_project(issue)
     query = IssueQuery.new

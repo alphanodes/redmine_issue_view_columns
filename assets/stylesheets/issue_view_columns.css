@@ -23,8 +23,8 @@
     padding-right: 5px !important;
   }
 
-  #issue_tree > td.buttons,
-  #relations > td.buttons {
+  #issue_tree .view-columns > td.buttons,
+  #relations .view-columns > td.buttons {
     position: relative !important;
     padding: 5px !important;
   }

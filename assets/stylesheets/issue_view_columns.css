@@ -22,4 +22,10 @@
     min-width: 290px !important;
     padding-right: 5px !important;
   }
+
+  #issue_tree > td.buttons,
+  #relations > td.buttons {
+    position: relative !important;
+    padding: 5px !important;
+  }
 }

@@ -8,7 +8,7 @@
       if($('#issue_tree table.issues tr.issue.closed').length || (1==#{issue_columns_with_closed_issues? || @issue.leaf? ? '0' : '1'})) {
         $('#issue_tree .contextual').prepend("#{escape_javascript link_to_closed_issues(@issue, issue_scope)}");
       }
-      if($('#relations table.issues tr.issue.closed').length || (1==#{issue_columns_with_closed_issues? && @relations.any? ? '0' : '1'})) {
+      if($('#relations table.issues tr.issue.closed').length || (1==#{issue_columns_with_closed_issues? || @relations.none? ? '0' : '1'})) {
         $('#relations .contextual').prepend("#{escape_javascript link_to_closed_issues(@issue, issue_scope)}");
       }
     });

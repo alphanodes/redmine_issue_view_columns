@@ -25,4 +25,3 @@ Redmine::Plugin.register :redmine_issue_view_columns do
 end
 
 RedminePluginKit::Loader.persisting { loader.load_model_hooks! }
-RedminePluginKit::Loader.to_prepare { RedmineIssueViewColumns.setup! } if Rails.version < '6.0'

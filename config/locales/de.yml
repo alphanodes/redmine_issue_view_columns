@@ -3,6 +3,7 @@ de:
   issue_view_columns_settings: Ticket Ausgabespalten
   label_hide_closed_issues: Geschlossene Tickets ausblenden
   label_issue_columns_created_sucessfully: Spalten erfolgreich aktualisiert
+  label_issue_view_columns_enable_module: Das Ticket-Modul muss für dieses Projekt aktiviert sein.
   label_select_issue_view_columns: Spalten für Untertickets und Ticketbeziehungen auswählen
   label_view_columns_issue_scope: Darstellungsbereich für Untertickets
   label_view_columns_scope_all: Alle Tickets

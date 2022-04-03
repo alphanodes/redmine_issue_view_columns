@@ -1,9 +1,17 @@
-= stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
-= javascript_include_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
+- if User.current.allowed_to? :view_issues, @project
+  = stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
+  = javascript_include_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
 
-= form_tag project_issue_view_columns_path(@project), name: 'issue_view_columns', method: :put do
-  fieldset.box
-    legend = l :label_select_issue_view_columns
-    = render_query_columns_selection build_query_for_project
+  = form_tag project_issue_view_columns_path(@project), name: 'issue_view_columns', method: :put do
+    fieldset.box
+      legend = l :label_select_issue_view_columns
 
-  = submit_tag t(:button_save)
+      .contextual
+        = link_to l(:label_administration), plugin_settings_path(id: 'redmine_issue_view_columns'), class: 'icon icon-settings'
+
+      = render_query_columns_selection build_query_for_project
+
+    = submit_tag t(:button_save)
+
+- else
+  p.nodata = l :label_issue_view_columns_enable_module

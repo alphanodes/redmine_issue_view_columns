@@ -4,8 +4,7 @@ module IssueViewColumnsProjectsHelper
   def project_settings_tabs
     tabs = super
 
-    if User.current.allowed_to?(:manage_issue_view_columns, @project) &&
-       @project.module_enabled?(:issue_view_columns)
+    if User.current.allowed_to? :manage_issue_view_columns, @project
       tabs << { name: 'issue_view_columns',
                 action: :issue_view_columns,
                 partial: 'projects/settings/issue_view_columns',

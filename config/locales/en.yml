@@ -1,15 +1,16 @@
 en:
-  info_view_columns_issue_scope: If many sub-tasks or "related issues" are used, hide closed issues by default. For better performance.
+  info_view_columns_issue_scope: If many subtasks or "related issues" are used, hide closed issues by default. For better performance.
   issue_view_columns_settings: Issue columns
   label_hide_closed_issues: Hide closed isssues
   label_issue_columns_created_sucessfully: Columns updated successfully
-  label_issue_view_columns_enable_module: "Issues module should be enabled for this project"
+  label_issue_view_columns_enable_module: Issues module should be enabled for this project
   label_select_issue_view_columns: Select columns for issue's subtasks and related issues
-  label_view_columns_issue_scope: Scope for sub issues
+  label_view_columns_issue_scope: Scope
   label_view_columns_scope_all: All issues
   label_view_columns_scope_without_closed: Closed issues can be hidden
   label_view_columns_scope_without_closed_by_default: Closed issues are hidden by default
   permission_manage_issue_view_columns: Manage issue view columns
   project_module_issue_view_columns: Issue view columns
   info_issue_view_columns_without_columns: If no columns are configured, default Redmine view is used.
-  info_issue_view_columns_project_settings: By activating the project module "Issue view columns" you can individually define columns for sub-issues and issue relationships for the project (if these need to be different from the system standard). We recommend deactivating the module if the system standard is used.
+  info_issue_view_columns_project_settings: By activating the project module "Issue view columns" you can individually define columns for subtasks and issue relationships for the project (if these need to be different from system default).
+    If you want to use system default you have to deactivate this project module.

@@ -11,3 +11,5 @@ en:
   label_view_columns_scope_without_closed_by_default: Closed issues are hidden by default
   permission_manage_issue_view_columns: Manage issue view columns
   project_module_issue_view_columns: Issue view columns
+  info_issue_view_columns_without_columns: If no columns are configured, default Redmine view is used.
+  info_issue_view_columns_project_settings: Durch Aktivierung des Projekt-Modul "Spalten in Ticketansicht" kannst Du individuel für das Projekt Spalten festlegen (wenn diese vom System-Standard abweichen sollen). Wenn Du den Systemstandard verwenden willst, deaktivere das Modul im Projekt.

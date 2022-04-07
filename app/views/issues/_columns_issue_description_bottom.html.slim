@@ -2,7 +2,8 @@
   = stylesheet_link_tag 'issue_view_columns', plugin: 'redmine_issue_view_columns'
 
 - issue_scope = RedmineIssueViewColumns.setting :issue_scope
-- unless issue_scope_with_closed? issue_scope
+- Additionals.debug @project.issue_view_columns?
+- if @project.issue_view_columns? && !issue_scope_with_closed?(issue_scope)
   javascript:
     $(function() {
       if($('#issue_tree table.issues tr.issue.closed').length || (1==#{issue_columns_with_closed_issues? || @issue.leaf? ? '0' : '1'})) {

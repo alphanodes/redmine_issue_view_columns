@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RedmineIssueViewColumns
-  VERSION = '2.0.1'
+  VERSION = '2.0.2'
 
   include RedminePluginKit::PluginBase
 
@@ -9,6 +9,9 @@ module RedmineIssueViewColumns
     private
 
     def setup
+      # Patches
+      loader.add_patch %w[Project]
+
       # include QueriesHelper in projects helper
       # Helper
       loader.add_helper [{ controller: 'Issues', helper: 'IssueViewColumnsIssues' },

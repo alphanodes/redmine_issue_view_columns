@@ -151,17 +151,9 @@ module IssueViewColumnsIssuesHelper
     query = IssueQuery.new
     query.project = issue.project
     available_fields = query.available_inline_columns
-
-    all_fields = if issue.project.module_enabled? :issue_view_columns
-                   IssueViewColumn.where(project_id: issue.project_id).sorted.pluck(:name)
-                 else
-                   columns_setting = RedmineIssueViewColumns.setting :issue_list_defaults
-                   columns_setting.present? && columns_setting['column_names'].present? ? columns_setting['column_names'] : []
-                 end
-
     first_cols = %w[tracker subject]
     subtask_fields = []
-    all_fields.each do |field|
+    issue.project.issue_view_columns.each do |field|
       next if first_cols.include? field
 
       proj_field = available_fields.select { |f| f.name.to_s == field }

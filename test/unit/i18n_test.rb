@@ -27,9 +27,9 @@ class I18nTest < RedmineIssueViewColumns::TestCase
       assert set_language_if_valid(lang)
       case lang.to_s
       when 'en'
-        assert_equal 'Scope for sub issues', l(:label_view_columns_issue_scope)
+        assert_equal 'Scope', l(:label_view_columns_issue_scope)
       when 'de'
-        assert_not l(:label_view_columns_issue_scope) == 'Scope for sub issues', lang
+        assert_not l(:label_view_columns_issue_scope) == 'Scope', lang
       end
     end
 

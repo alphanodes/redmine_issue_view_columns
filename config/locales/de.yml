@@ -14,3 +14,4 @@ de:
   info_issue_view_columns_without_columns: Wenn keine Spalten festgelegt werden, wird die Standard-Darstellung von Redmine verwendet.
   info_issue_view_columns_project_settings: Durch Aktivierung des Projekt-Modul "Spalten in Ticketansicht" kann man individuell für das Projekt Spalten für Untertickets und Ticketbeziehungen festlegen (falls diese vom der systemweiten Einstellung abweichen sollen).
     Wenn die systemweite Einstellung verwendet werden soll, muss das Projekt Module deaktiviert werden.
+  label_issue_view_column: Ticketspalte

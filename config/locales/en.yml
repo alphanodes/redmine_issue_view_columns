@@ -14,3 +14,4 @@ en:
   info_issue_view_columns_without_columns: If no columns are configured, default Redmine view is used.
   info_issue_view_columns_project_settings: By activating the project module "Issue view columns" you can individually define columns for subtasks and issue relationships for the project (if these need to be different from system default).
     If you want to use system default you have to deactivate this project module.
+  label_issue_view_column: Issue column

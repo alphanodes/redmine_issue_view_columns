@@ -31,10 +31,19 @@ Install ``redmine_issue_view_columns`` plugin for `Redmine`
     cd $REDMINE_ROOT
     git clone git://github.com/alphanodes/redmine_issue_view_columns.git plugins/redmine_issue_view_columns
     git clone git://github.com/alphanodes/additionals.git plugins/additionals
-    bundle install --without development test
+    bundle config set --local without 'development test'
+    bundle install
     bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 Restart Redmine (application server) and you should see the plugin show up in the Plugins page.
+
+Uninstall
+------------
+
+Uninstall `redmine_issue_view_columns` plugin.
+
+    cd $REDMINE_ROOT
+    rm -rf plugins/redmine_issue_view_columns public/plugin_assets/redmine_issue_view_columns
 
 Credits
 -------

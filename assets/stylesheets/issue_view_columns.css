@@ -1,3 +1,9 @@
+#issue_tree .view-columns .issue > td.subject,
+#relations .view-columns .issue > td.subject {
+  min-width: 300px !important;
+  padding-right: 5px !important;
+}
+
 #available_settings_issue_view_columns,
 #selected_settings_issue_view_columns,
 #available_c,

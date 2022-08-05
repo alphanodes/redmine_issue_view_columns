@@ -62,7 +62,7 @@ module IssueViewColumnsIssuesHelper
       other_issue = relation.other_issue issue
       next if other_issue.closed? && !issue_columns_with_closed_issues?
 
-      tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'}"
+      tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'} #{relation.css_classes_for other_issue}"
       buttons = if manage_relations
                   link_to l(:label_relation_delete),
                           relation_path(relation),

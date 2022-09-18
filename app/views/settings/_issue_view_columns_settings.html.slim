@@ -12,7 +12,8 @@ p
 
 br
 
-= render partial: 'additionals/settings_list_defaults', locals: { query_class: IssueQuery,
-                                                                  query_type: 'issue',
-                                                                  legend: l(:label_select_issue_view_columns),
-                                                                  totalable_columns: false }
+= render 'additionals/settings_list_defaults',
+         query_class: IssueQuery,
+         query_type: 'issue',
+         legend: l(:label_select_issue_view_columns),
+         totalable_columns: false

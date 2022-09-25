@@ -22,7 +22,7 @@ class IssueViewColumnsController < ApplicationController
       c = IssueViewColumn.new project_id: @project.id,
                               name: col,
                               position: position
-      c.save
+      c.save!
     end
 
     redirect_to settings_project_path(@project, tab: 'issue_view_columns'), notice: l(:label_issue_columns_created_sucessfully)

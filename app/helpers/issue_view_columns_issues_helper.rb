@@ -76,7 +76,7 @@ module IssueViewColumnsIssuesHelper
                 end
       buttons << link_to_context_menu
 
-      subject_content = relation.to_s(@issue) { |other| link_to_issue(other, project: Setting.cross_project_issue_relations?) }.html_safe
+      subject_content = relation.to_s(@issue) { |other| link_to_issue other, project: Setting.cross_project_issue_relations? }.html_safe
 
       field_content = content_tag('td', check_box_tag('ids[]', other_issue.id, false, id: nil), class: 'checkbox') +
                       content_tag('td', subject_content, class: 'subject')

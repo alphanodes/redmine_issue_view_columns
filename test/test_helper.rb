@@ -22,12 +22,12 @@ module RedmineIssueViewColumns
     include Additionals::GlobalTestHelper
 
     def prepare_tests
-      Role.where(id: 1).each do |r|
+      Role.where(id: 1).find_each do |r|
         r.permissions << :manage_issue_view_columns
         r.save
       end
 
-      Project.where(id: 1).each do |project|
+      Project.where(id: 1).find_each do |project|
         EnabledModule.create project: project, name: 'issue_view_columns'
       end
     end

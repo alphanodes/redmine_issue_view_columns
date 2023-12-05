@@ -3,7 +3,7 @@
 loader = RedminePluginKit::Loader.new plugin_id: 'redmine_issue_view_columns'
 
 Redmine::Plugin.register :redmine_issue_view_columns do
-  name 'Redmine Issue View Columns'
+  name 'Issue View Columns'
   author 'AlphaNodes GmbH'
   url 'https://github.com/AlphaNodes/redmine_issue_view_columns'
   author_url 'https://alphanodes.com/'

@@ -26,7 +26,7 @@ Requirements
 Installation
 ------------
 
-Install ``redmine_issue_view_columns`` plugin for `Redmine`
+Install `redmine_issue_view_columns` plugin for `Redmine`
 
     cd $REDMINE_ROOT
     git clone git://github.com/alphanodes/redmine_issue_view_columns.git plugins/redmine_issue_view_columns

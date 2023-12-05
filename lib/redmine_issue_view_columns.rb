@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RedmineIssueViewColumns
-  VERSION = '2.0.2'
+  VERSION = '2.0.3'
 
   include RedminePluginKit::PluginBase
 

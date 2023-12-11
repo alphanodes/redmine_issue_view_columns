@@ -3,5 +3,5 @@
 class IssueViewColumn < ActiveRecord::Base
   belongs_to :project
 
-  scope :sorted, (-> { order :position })
+  scope :sorted, -> { order :position }
 end

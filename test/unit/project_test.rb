@@ -42,7 +42,7 @@ class ProjectTest < RedmineIssueViewColumns::TestCase
       project = projects :projects_003
 
       assert_not project.issue_view_columns?
-      assert project.issue_view_columns.is_a? Array
+      assert_kind_of Array, project.issue_view_columns
       assert_empty project.issue_view_columns
     end
   end

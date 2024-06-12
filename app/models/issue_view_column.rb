@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IssueViewColumn < Rails.version < '7.1' ? ActiveRecord::Base : ApplicationRecord
+class IssueViewColumn < AdditionalsApplicationRecord
   belongs_to :project
 
   scope :sorted, -> { order :position }

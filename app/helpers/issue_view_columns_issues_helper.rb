@@ -2,19 +2,27 @@
 
 module IssueViewColumnsIssuesHelper
   def render_descendants_tree(issue)
-    columns_list = get_fields_for_project issue
-    # no field defined, then use render from core redmine (or whatever by other plugins loaded before this)
-    return super if columns_list.count.zero?
+    sort_dir_file_model = RedmineIssueViewColumns.setting(:sort_dir_file_model)
+    columns_list = get_fields_for_project(issue)
 
-    # continue here if there are fields defined
+    # Proceed with default rendering if no columns are defined
+    return super if columns_list.empty?
+
+    if sort_dir_file_model == '1'
+      render_descendants_tree_dir_file_model(issue, columns_list)
+    else
+      render_descendants_tree_default(issue, columns_list)
+    end
+  end
+
+  def render_descendants_tree_dir_file_model(issue, columns_list)
     field_values = +''
-    s = table_start_for_relations columns_list
-    manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
-    # set data
-    issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
-      next if child.closed? && !issue_columns_with_closed_issues?
+    s = table_start_for_relations(columns_list)
+    manage_relations = User.current.allowed_to?(:manage_subtasks, issue.project)
+    rendered_issues = Set.new
 
-      tr_classes = +"hascontextmenu #{child.css_classes} #{cycle 'odd', 'even'}"
+    render_issue_row = lambda do |child, level|
+      tr_classes = +"hascontextmenu #{child.css_classes} #{cycle('odd', 'even')}"
       tr_classes << " idnt idnt-#{level}" if level.positive?
 
       buttons = if manage_relations
@@ -32,24 +40,92 @@ module IssueViewColumnsIssuesHelper
                 end
       buttons << link_to_context_menu
 
-      field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', link_to_issue(child, project: (issue.project_id != child.project_id)), class: 'subject')
+      field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox')
+
+      if child.descendants.any?
+        expand_icon = content_tag('span', '+', class: 'expand-icon', title: 'Expand')
+        subject_content = "#{expand_icon} #{link_to_issue(child, project: (issue.project_id != child.project_id))}".html_safe
+      else
+        subject_content = link_to_issue(child, project: (issue.project_id != child.project_id))
+      end
+
+      field_content << content_tag('td', subject_content, class: 'subject')
 
       columns_list.each do |column|
         field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s)
       end
 
       field_content << content_tag('td', buttons, class: 'buttons')
-      field_values << content_tag('tr', field_content,
-                                  class: tr_classes,
-                                  id: "issue-#{child.id}").html_safe
+
+      content_tag('tr', field_content, class: tr_classes, id: "issue-#{child.id}").html_safe
     end
+
+    render_issue_with_descendants = lambda do |parent, level|
+      issues_with_subissues = []
+      issues_without_subissues = []
+
+      parent.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft).each do |child|
+        next if (child.closed? && !issue_columns_with_closed_issues?) || rendered_issues.include?(child.id)
+
+        rendered_issues.add(child.id)
+
+        if child.descendants.any?
+          issues_with_subissues << render_issue_row.call(child, level)
+          subissues_with, subissues_without = render_issue_with_descendants.call(child, level + 1)
+          issues_with_subissues.concat(subissues_with)
+          issues_with_subissues.concat(subissues_without)
+        else
+          issues_without_subissues << render_issue_row.call(child, level) if child.parent_id == parent.id
+        end
+      end
+
+      return issues_with_subissues, issues_without_subissues
+    end
+
+    issues_with_subissues, issues_without_subissues = render_issue_with_descendants.call(issue, 0)
+
+    field_values << issues_with_subissues.join('').html_safe
+    field_values << issues_without_subissues.join('').html_safe
 
     s << field_values
     s << table_end_for_relations
 
     s.html_safe
   end
+
+  def render_descendants_tree_default(issue, columns_list)
+    field_values = "".dup  # Ensure field_values is mutable
+    s = String.new("<table class=\"list issues odd-even\">")
+
+    s << content_tag('th', l(:field_subject), style: 'text-align:left')
+    columns_list.each do |column|
+      s << content_tag('th', column.caption)
+    end
+
+    s << content_tag('th', '', style: 'text-align:right') if Redmine::VERSION::MAJOR >= 4
+
+    issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
+      css = "issue issue-#{child.id} hascontextmenu #{child.css_classes}"
+      css << " idnt idnt-#{level}" if level > 0
+
+      field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox') +
+                      content_tag('td', link_to_issue(child, project: (issue.project_id != child.project_id)), class: 'subject', style: 'width: 30%')
+
+      columns_list.each do |column|
+        field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s)
+      end
+
+      field_content << content_tag('td', link_to_context_menu, class: 'buttons', style: 'text-align:right') if Redmine::VERSION::MAJOR >= 4
+
+      field_values << content_tag('tr', field_content, class: css).html_safe
+    end
+
+    s << field_values
+    s << '</table>'
+    s.html_safe
+  end
+
+
 
   # Renders the list of related issues on the issue details view
   def render_issue_relations(issue, relations)

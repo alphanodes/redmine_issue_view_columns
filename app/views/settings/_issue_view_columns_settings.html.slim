@@ -12,8 +12,19 @@ p
 
 br
 
+p
+  = additionals_settings_checkbox :sort_dir_file_model,
+                                  label: l(:label_sort_dir_file_model),
+                                  active_value: @settings[:sort_dir_file_model],
+                                  tag_name: 'settings[sort_dir_file_model]'
+  em.info
+    = l :info_sort_dir_file_model
+
+br
+
 = render 'additionals/settings_list_defaults',
          query_class: IssueQuery,
          query_type: 'issue',
          legend: l(:label_select_issue_view_columns),
          totalable_columns: false
+

@@ -15,3 +15,5 @@ en:
   info_issue_view_columns_project_settings: By activating the project module "Issue view columns" you can individually define columns for subtasks and issue relationships for the project (if these need to be different from system default).
     If you want to use system default you have to deactivate this project module.
   label_issue_view_column: Issue column
+  label_sort_dir_file_model: Sort using dir/file model
+  info_sort_dir_file_model: Enable this option to sort issues using the directory/file model.

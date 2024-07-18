@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module IssueViewColumnsIssuesHelper
+
   def render_descendants_tree(issue)
     sort_dir_file_model = RedmineIssueViewColumns.setting(:sort_dir_file_model)
     columns_list = get_fields_for_project(issue)
@@ -16,12 +17,17 @@ module IssueViewColumnsIssuesHelper
   end
 
   def render_descendants_tree_dir_file_model(issue, columns_list)
+    @issue = Issue.find(params[:id])
+
+    # Initialize variables
+    collapsed_ids = issue.collapsed_ids.to_s.split.map(&:to_i)
+
     field_values = +''
     s = table_start_for_relations(columns_list)
     manage_relations = User.current.allowed_to?(:manage_subtasks, issue.project)
     rendered_issues = Set.new
 
-    render_issue_row = lambda do |child, level|
+    render_issue_row = lambda do |child, level, hidden = false|
       tr_classes = +"hascontextmenu #{child.css_classes} #{cycle('odd', 'even')}"
       tr_classes << " idnt idnt-#{level}" if level.positive?
 
@@ -43,7 +49,8 @@ module IssueViewColumnsIssuesHelper
       field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox')
 
       if child.descendants.any?
-        expand_icon = content_tag('span', '+', class: 'expand-icon', title: 'Expand')
+        icon_class = collapsed_ids.include?(child.id) ? 'icon icon-toggle-plus' : 'icon icon-toggle-minus'
+        expand_icon = content_tag('span', '', class: icon_class, onclick: 'collapseExpand(this)')
         subject_content = "#{expand_icon} #{link_to_issue(child, project: (issue.project_id != child.project_id))}".html_safe
       else
         subject_content = link_to_issue(child, project: (issue.project_id != child.project_id))
@@ -57,10 +64,12 @@ module IssueViewColumnsIssuesHelper
 
       field_content << content_tag('td', buttons, class: 'buttons')
 
-      content_tag('tr', field_content, class: tr_classes, id: "issue-#{child.id}").html_safe
+      # Add style attribute to hide the row if hidden is true
+      row_style = hidden ? 'display: none;' : ''
+      content_tag('tr', field_content, class: tr_classes, id: "issue-#{child.id}", style: row_style).html_safe
     end
 
-    render_issue_with_descendants = lambda do |parent, level|
+    render_issue_with_descendants = lambda do |parent, level, hidden = false|
       issues_with_subissues = []
       issues_without_subissues = []
 
@@ -69,21 +78,26 @@ module IssueViewColumnsIssuesHelper
 
         rendered_issues.add(child.id)
 
+        child_hidden = hidden || collapsed_ids.include?(child.id)
+
         if child.descendants.any?
-          issues_with_subissues << render_issue_row.call(child, level)
-          subissues_with, subissues_without = render_issue_with_descendants.call(child, level + 1)
+          issues_with_subissues << render_issue_row.call(child, level, hidden)
+          subissues_with, subissues_without = render_issue_with_descendants.call(child, level + 1, child_hidden)
           issues_with_subissues.concat(subissues_with)
           issues_with_subissues.concat(subissues_without)
         else
-          issues_without_subissues << render_issue_row.call(child, level) if child.parent_id == parent.id
+          issues_without_subissues << render_issue_row.call(child, level, child_hidden) if child.parent_id == parent.id
         end
       end
 
       return issues_with_subissues, issues_without_subissues
     end
 
+
+    # Initial call to render the top-level issues
     issues_with_subissues, issues_without_subissues = render_issue_with_descendants.call(issue, 0)
 
+    # Append issues with subissues first, then issues without subissues
     field_values << issues_with_subissues.join('').html_safe
     field_values << issues_without_subissues.join('').html_safe
 
@@ -92,6 +106,7 @@ module IssueViewColumnsIssuesHelper
 
     s.html_safe
   end
+
 
   def render_descendants_tree_default(issue, columns_list)
     field_values = "".dup  # Ensure field_values is mutable
@@ -124,8 +139,6 @@ module IssueViewColumnsIssuesHelper
     s << '</table>'
     s.html_safe
   end
-
-
 
   # Renders the list of related issues on the issue details view
   def render_issue_relations(issue, relations)

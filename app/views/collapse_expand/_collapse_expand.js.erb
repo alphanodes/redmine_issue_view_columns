@@ -1,0 +1,109 @@
+
+<script type="text/javascript">  
+let collapsedIds = '<%= @issue.collapsed_ids.to_s %>'
+let issueId = '<%= @issue.id %>'
+
+function collapseExpand(element) {
+  
+  // Helper function to handle the display logic
+  function toggleIssues(targetIssue, targetIssueIdntLevel, show) {
+    const issues = document.getElementsByClassName('hascontextmenu');
+
+    // Find the index of the target issue within issues
+    let startIndex = -1;
+    for (let i = 0; i < issues.length; i++) {
+      if (issues[i] === targetIssue) {
+        startIndex = i;
+        break;
+      }
+    }
+
+    // Initialize parent issue tracking
+    let parentIssue = null;
+    let parentIdntLevel = 0;
+
+    for (let i = startIndex + 1; i < issues.length; i++) {
+      const issue = issues[i];
+      const idntClasses = issue.classList;
+
+      // Check if issue has idnt class and get its level
+      let idntLevel = 0;
+      for (let j = 0; j < idntClasses.length; j++) {
+        const className = idntClasses[j];
+        if (className.startsWith('idnt-')) {
+          idntLevel = parseInt(className.split('-')[1], 10);
+          break;
+        }
+      }
+
+      // Reset parent issue if necessary
+      if (idntLevel <= parentIdntLevel) {
+        parentIssue = null;
+      }
+
+      // Toggle visibility based on the idnt level
+      if (idntLevel > targetIssueIdntLevel) {
+        if (show) {
+          // Check if any parent elements are still collapsed
+          let shouldHide = false;
+          if (parentIssue && parentIssue.querySelector('.icon-toggle-plus')) {
+            shouldHide = true;
+          }
+
+          if (shouldHide) {
+            issue.style.display = 'none';
+          } else {
+            issue.style.display = '';
+          }
+        } else {
+          issue.style.display = 'none';
+        }
+
+        // Update parent issue and idnt level
+        parentIssue = issue;
+        parentIdntLevel = idntLevel;
+      } else {
+        break;
+      }
+    }
+  }
+
+  // Extract the target issue and its idnt level
+  const targetIssue = element.parentElement.parentElement;
+  let targetIssueIdntLevel = 0;
+  const targetIssueClasses = targetIssue.classList;
+  for (let j = 0; j < targetIssueClasses.length; j++) {
+    const className = targetIssueClasses[j];
+    if (className.startsWith('idnt-')) {
+      targetIssueIdntLevel = parseInt(className.split('-')[1], 10);
+      break;
+    }
+  }
+
+  if (element.classList.contains('icon-toggle-minus')) {
+    element.classList.remove('icon-toggle-minus');
+    element.classList.add('icon-toggle-plus');
+    // Add to collapsedIds
+    collapsedIds += targetIssue.id.split('-')[1] + ' ';
+    toggleIssues(targetIssue, targetIssueIdntLevel, false);
+  } else {
+    element.classList.remove('icon-toggle-plus');
+    element.classList.add('icon-toggle-minus');
+    // Remove from collapsedIds
+    collapsedIds = collapsedIds.replace(new RegExp(targetIssue.id.split('-')[1] + '\\s*'), '');
+    toggleIssues(targetIssue, targetIssueIdntLevel, true);
+  }
+
+Rails.ajax({
+  url: `/custom_issues/`+issueId+`/update_collapsed_ids`,
+  type: "PATCH",
+  data: JSON.stringify({
+    id: issueId,
+    collapsed_ids: collapsedIds
+  }),
+  contentType: "application/json"
+});
+
+
+}
+</script>

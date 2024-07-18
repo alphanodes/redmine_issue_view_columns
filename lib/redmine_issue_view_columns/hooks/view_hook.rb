@@ -11,5 +11,8 @@ module RedmineIssueViewColumns
     class ViewHook < Redmine::Hook::ViewListener
       render_on :view_issues_show_description_bottom, partial: 'issues/columns_issue_description_bottom'
     end
+    class CollapseExpandHook < Redmine::Hook::ViewListener
+      render_on :view_issues_show_description_bottom, partial: 'collapse_expand/collapse_expand.js'
+    end
   end
 end

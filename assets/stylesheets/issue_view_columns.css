@@ -35,3 +35,19 @@
     padding: 5px !important;
   }
 }
+
+#sorting_criteria_box{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.capitalize-text {
+  text-transform: capitalize;
+}
+
+#input_header{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}

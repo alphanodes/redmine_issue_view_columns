@@ -28,3 +28,22 @@ br
          legend: l(:label_select_issue_view_columns),
          totalable_columns: false
 
+br
+
+p
+  = additionals_settings_textfield :columns_min_width,
+                                   value: @settings[:columns_min_width],
+                                   label: l(:label_columns_min_width),
+                                   tag_name: 'settings[columns_min_width]'
+  em.info
+    = l :info_columns_min_width
+
+br
+
+p
+  = additionals_settings_textfield :columns_sorting,
+                                   value: @settings[:columns_sorting],
+                                   label: l(:label_columns_sorting),
+                                   tag_name: 'settings[columns_sorting]'
+  em.info
+    = l :info_columns_sorting

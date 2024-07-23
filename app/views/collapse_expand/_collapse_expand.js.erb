@@ -1,16 +1,14 @@
-
 <script type="text/javascript">  
-let collapsedIds = '<%= @issue.collapsed_ids.to_s %>'
-let issueId = '<%= @issue.id %>'
+let collapsedIds = '<%= @issue.collapsed_ids.to_s %>';
+let issueId = '<%= @issue.id %>';
 
 function collapseExpand(element) {
-  
   // Helper function to handle the display logic
   function toggleIssues(targetIssue, targetIssueIdntLevel, show) {
     const issues = document.getElementsByClassName('hascontextmenu');
+    let startIndex = -1;
 
     // Find the index of the target issue within issues
-    let startIndex = -1;
     for (let i = 0; i < issues.length; i++) {
       if (issues[i] === targetIssue) {
         startIndex = i;
@@ -18,7 +16,6 @@ function collapseExpand(element) {
       }
     }
 
-    // Initialize parent issue tracking
     let parentIssue = null;
     let parentIdntLevel = 0;
 
@@ -44,7 +41,6 @@ function collapseExpand(element) {
       // Toggle visibility based on the idnt level
       if (idntLevel > targetIssueIdntLevel) {
         if (show) {
-          // Check if any parent elements are still collapsed
           let shouldHide = false;
           if (parentIssue && parentIssue.querySelector('.icon-toggle-plus')) {
             shouldHide = true;
@@ -64,6 +60,19 @@ function collapseExpand(element) {
         parentIdntLevel = idntLevel;
       } else {
         break;
+      }
+    }
+
+    // Apply odd/even classes to visible rows
+    let visibleRowIndex = 0;
+    for (let i = 0; i < issues.length; i++) {
+      const issue = issues[i];
+      if (issue.style.display !== 'none') {
+        // Remove previous odd/even classes
+        issue.classList.remove('odd', 'even');
+        // Add the new odd/even class based on the row index
+        issue.classList.add(visibleRowIndex % 2 === 0 ? 'even' : 'odd');
+        visibleRowIndex++;
       }
     }
   }
@@ -94,16 +103,15 @@ function collapseExpand(element) {
     toggleIssues(targetIssue, targetIssueIdntLevel, true);
   }
 
-Rails.ajax({
-  url: `/custom_issues/`+issueId+`/update_collapsed_ids`,
-  type: "PATCH",
-  data: JSON.stringify({
-    id: issueId,
-    collapsed_ids: collapsedIds
-  }),
-  contentType: "application/json"
-});
-
-
+  // Update server with new collapsed IDs
+  Rails.ajax({
+    url: `/custom_issues/${issueId}/update_collapsed_ids`,
+    type: "PATCH",
+    data: JSON.stringify({
+      id: issueId,
+      collapsed_ids: collapsedIds
+    }),
+    contentType: "application/json"
+  });
 }
 </script>

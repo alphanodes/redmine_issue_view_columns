@@ -17,3 +17,10 @@ en:
   label_issue_view_column: Issue column
   label_sort_dir_file_model: Sort using dir/file model
   info_sort_dir_file_model: Enable this option to sort issues using the directory/file model.
+  label_sorting_priority_columns: Column priority in sorting
+  label_sort_order: Sorting order 
+  label_sorting_columns: Set sorting criteria and column min-width
+  label_columns_min_width: Set min-width property for columns
+  info_columns_min_width: "Specify the minimum width for each column. Example: Project:200px, Tracker:30vw"
+  label_columns_sorting: Set sorting order for columns
+  info_columns_sorting: "Specify the sorting order for each column. Use the format 'ColumnName:ASC' for ascending and 'ColumnName:DESC' for descending. Example: 'Project:ASC, Updated:DESC'."

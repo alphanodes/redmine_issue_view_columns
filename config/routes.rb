@@ -9,5 +9,4 @@ Rails.application.routes.draw do
       patch 'update_collapsed_ids'
     end
   end
-  patch 'settings/update_column_settings', to: 'column_settings#update_column_settings'
 end

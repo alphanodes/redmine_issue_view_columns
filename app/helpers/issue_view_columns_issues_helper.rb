@@ -20,8 +20,8 @@ module IssueViewColumnsIssuesHelper
     sort_dir_file_model = RedmineIssueViewColumns.setting(:sort_dir_file_model)
     collapsed_ids = issue.collapsed_ids.to_s.split.map(&:to_i)
     field_values = +''
-    s = table_start_for_relations(columns_list)
-    manage_relations = User.current.allowed_to?(:manage_subtasks, issue.project)
+    s = table_start_for_relations columns_list
+    manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
     rendered_issues = Set.new
 
     # Determine which rendering method to use based on sorting model
@@ -253,16 +253,16 @@ module IssueViewColumnsIssuesHelper
 
       tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'} #{relation.css_classes_for other_issue}"
       buttons = if manage_relations
-          link_to l(:label_relation_delete),
-                  relation_path(relation),
-                  remote: true,
-                  method: :delete,
-                  data: { confirm: l(:text_are_you_sure) },
-                  title: l(:label_relation_delete),
-                  class: 'icon-only icon-link-break'
-        else
-          ''.html_safe
-        end
+            link_to l(:label_relation_delete),
+                    relation_path(relation),
+                    remote: true,
+                    method: :delete,
+                    data: { confirm: l(:text_are_you_sure) },
+                    title: l(:label_relation_delete),
+                    class: 'icon-only icon-link-break'
+          else
+            ''.html_safe
+          end
       buttons << link_to_context_menu
 
       subject_content = relation.to_s(@issue) { |other| link_to_issue other, project: Setting.cross_project_issue_relations? }.html_safe

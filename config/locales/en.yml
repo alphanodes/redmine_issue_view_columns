@@ -22,5 +22,7 @@ en:
   label_sorting_columns: Set sorting criteria and column min-width
   label_columns_min_width: Set min-width property for columns
   info_columns_min_width: "Specify the minimum width for each column. Example: Project:200px, Status:30vw"
-  label_columns_sorting: Set sorting order for columns
-  info_columns_sorting: "Specify the sorting order for each column. Use the format 'ColumnName:ASC' for ascending and 'ColumnName:DESC' for descending. Example: 'Project:ASC, Updated:DESC'."
+  access_denied: "Access denied"
+  invalid_json_format: "Invalid JSON format"
+  update_successful: "Update successful"
+  update_failed: "Update failed"

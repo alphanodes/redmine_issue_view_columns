@@ -22,6 +22,7 @@ de:
   label_sorting_columns: Sortierkriterien und Spalten-Mindestbreite festlegen
   label_columns_min_width: Mindestbreite für Spalten festlegen
   info_columns_min_width: "Geben Sie die Mindestbreite für jede Spalte an. Beispiel: Projekt:200px, Status:30vw"
-  label_columns_sorting: Sortierreihenfolge für Spalten festlegen
-  info_columns_sorting: "Geben Sie die Sortierreihenfolge für jede Spalte an. Verwenden Sie das Format 'Spaltenname:ASC' für aufsteigend und 'Spaltenname:DESC' für absteigend. Beispiel: 'Projekt:ASC, Aktualisiert:DESC'."
-
+  access_denied: "Zugriff verweigert"
+  invalid_json_format: "Ungültiges JSON-Format"
+  update_successful: "Aktualisierung erfolgreich"
+  update_failed: "Aktualisierung fehlgeschlagen"

@@ -1,4 +1,4 @@
-<script type="text/javascript">  
+<script type="text/javascript">
 let collapsedIds = '<%= @issue.collapsed_ids.to_s %>';
 let issueId = '<%= @issue.id %>';
 
@@ -104,8 +104,10 @@ function collapseExpand(element) {
   }
 
   // Update server with new collapsed IDs
+
+  
   Rails.ajax({
-    url: `/custom_issues/${issueId}/update_collapsed_ids`,
+    url: `/issue_view_columns/${issueId}/update_collapsed_ids`,
     type: "PATCH",
     data: JSON.stringify({
       id: issueId,

@@ -81,7 +81,7 @@ module IssueViewColumnsIssuesHelper
     # Add columns with their respective content and minimum width style
     columns_list.each do |column|
       column_name = column.caption # Convert symbol to string
-      min_width_style = min_widths[column_name].present? ? 'min-width: #{min_widths[column_name]};' : ''
+      min_width_style = min_widths[column_name].present? ? "min-width: #{min_widths[column_name]};" : ''
       field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s, style: min_width_style)
     end
 
@@ -253,16 +253,16 @@ module IssueViewColumnsIssuesHelper
 
       tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'} #{relation.css_classes_for other_issue}"
       buttons = if manage_relations
-            link_to l(:label_relation_delete),
-                    relation_path(relation),
-                    remote: true,
-                    method: :delete,
-                    data: { confirm: l(:text_are_you_sure) },
-                    title: l(:label_relation_delete),
-                    class: 'icon-only icon-link-break'
-          else
-            ''.html_safe
-          end
+              link_to l(:label_relation_delete),
+                      relation_path(relation),
+                      remote: true,
+                      method: :delete,
+                      data: { confirm: l(:text_are_you_sure) },
+                      title: l(:label_relation_delete),
+                      class: 'icon-only icon-link-break'
+            else
+              ''.html_safe
+            end
       buttons << link_to_context_menu
 
       subject_content = relation.to_s(@issue) { |other| link_to_issue other, project: Setting.cross_project_issue_relations? }.html_safe
@@ -296,10 +296,10 @@ module IssueViewColumnsIssuesHelper
     return true if issue_scope_with_closed? issue_scope
 
     @issue_columns_with_closed_issues = if issue_scope == 'without_closed_by_default'
-        RedminePluginKit.true? params[:with_closed_issues]
-      else
-        RedminePluginKit.false? params[:without_closed_issues]
-      end
+                                          RedminePluginKit.true? params[:with_closed_issues]
+                                        else
+                                          RedminePluginKit.false? params[:without_closed_issues]
+                                        end
   end
 
   def link_to_closed_issues(issue, issue_scope)

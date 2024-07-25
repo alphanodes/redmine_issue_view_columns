@@ -105,7 +105,7 @@ function collapseExpand(element) {
 
   // Update server with new collapsed IDs
 
-  
+
   Rails.ajax({
     url: `/issue_view_columns/${issueId}/update_collapsed_ids`,
     type: "PATCH",

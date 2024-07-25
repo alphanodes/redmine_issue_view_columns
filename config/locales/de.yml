@@ -17,9 +17,8 @@ de:
   label_issue_view_column: Ticketspalte
   label_sort_dir_file_model: Sortierung nach Ordner-/Dateimodell
   info_sort_dir_file_model: Aktivieren Sie diese Option, um Probleme nach dem Ordner-/Dateimodell zu sortieren.
-  label_sorting_priority_columns: Spaltenpriorität beim Sortieren
-  label_sort_order: Sortierreihenfolge
   label_sorting_columns: Sortierkriterien und Spalten-Mindestbreite festlegen
+  info_columns_sorting: "Geben Sie die Sortierreihenfolge für jede Spalte an, in der Reihenfolge der Relevanz. Beispiel: Aktualisierte:DESC, Erstellt:ASC"
   label_columns_min_width: Mindestbreite für Spalten festlegen
   info_columns_min_width: "Geben Sie die Mindestbreite für jede Spalte an. Beispiel: Projekt:200px, Status:30vw"
   access_denied: "Zugriff verweigert"

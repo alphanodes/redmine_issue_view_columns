@@ -48,6 +48,6 @@ class IssueViewColumnsController < ApplicationController
       c.save!
     end
 
-    redirect_to settings_project_path(@project, tab: "issue_view_columns"), notice: l(:label_issue_columns_created_sucessfully)
+    redirect_to settings_project_path(@project, tab: 'issue_view_columns'), notice: l(:label_issue_columns_created_sucessfully)
   end
 end

@@ -253,16 +253,16 @@ module IssueViewColumnsIssuesHelper
 
       tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'} #{relation.css_classes_for other_issue}"
       buttons = if manage_relations
-              link_to l(:label_relation_delete),
-                      relation_path(relation),
-                      remote: true,
-                      method: :delete,
-                      data: { confirm: l(:text_are_you_sure) },
-                      title: l(:label_relation_delete),
-                      class: 'icon-only icon-link-break'
-            else
-              ''.html_safe
-            end
+                  link_to l(:label_relation_delete),
+                          relation_path(relation),
+                          remote: true,
+                          method: :delete,
+                          data: { confirm: l(:text_are_you_sure) },
+                          title: l(:label_relation_delete),
+                          class: 'icon-only icon-link-break'
+                else
+                  ''.html_safe
+                end
       buttons << link_to_context_menu
 
       subject_content = relation.to_s(@issue) { |other| link_to_issue other, project: Setting.cross_project_issue_relations? }.html_safe

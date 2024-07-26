@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path '../../test_helper', __FILE__
+require File.expand_path "../../test_helper", __FILE__
 
 class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
   fixtures :users, :email_addresses, :roles,
@@ -19,7 +19,8 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
   def setup
     prepare_tests
 
-    @global_settings = { 'column_names' => %w[created_on updated_on] }
+    @global_settings = { "column_names" => %w[created_on updated_on],
+                         "sort_dir_file_model" => 1 }
   end
 
   def test_show_author_column_for_related_issues_with_project_setting
@@ -149,4 +150,104 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
       assert_select "tr#issue-#{closed_issue.id}", count: 0
     end
   end
+
+  def test_render_issue_tree_dir_file_model
+    parent_issue = Issue.generate!(project_id: 1)
+    child_issue1 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id)
+    child_issue2 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id)
+    grandchild_issue = Issue.generate!(project_id: 1, parent_issue_id: child_issue2.id)
+
+    @request.session[:user_id] = 1
+
+    with_plugin_settings "redmine_issue_view_columns",
+                         sort_dir_file_model: '1' do
+      get :show, params: { id: parent_issue.id }
+
+      assert_response :success
+
+      issue_rows = css_select("#issue_tree tr").map(&:to_html)
+
+      # Extract the issue IDs from the rows
+      issue_ids = issue_rows.map { |row| row[/id="issue-(\d+)"/, 1].to_i }
+
+      # Assert that child_issue2 appears before child_issue1
+      assert issue_ids.index(child_issue2.id) < issue_ids.index(child_issue1.id), "Child issue 2 should appear before child issue 1"
+
+      # Assert that grandchild_issue appears after child_issue2
+      assert issue_ids.index(grandchild_issue.id) > issue_ids.index(child_issue2.id), "Grandchild issue should appear after child issue 2"
+    end
+  end
+
+  def test_render_issue_tree_default
+    parent_issue = Issue.generate!(project_id: 1)
+    child_issue1 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id)
+    child_issue2 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id)
+    grandchild_issue = Issue.generate!(project_id: 1, parent_issue_id: child_issue2.id)
+
+    @request.session[:user_id] = 1
+
+    with_plugin_settings "redmine_issue_view_columns",
+                         sort_dir_file_model: '0' do
+      get :show, params: { id: parent_issue.id }
+
+      assert_response :success
+
+      issue_rows = css_select("#issue_tree tr").map(&:to_html)
+
+      # Extract the issue IDs from the rows
+      issue_ids = issue_rows.map { |row| row[/id="issue-(\d+)"/, 1].to_i }
+
+      # Assert that child_issue2 appears before child_issue1
+      assert issue_ids.index(child_issue2.id) > issue_ids.index(child_issue1.id), "Child issue 2 should appear before child issue 1"
+
+      # Assert that grandchild_issue appears after child_issue2
+      assert issue_ids.index(grandchild_issue.id) > issue_ids.index(child_issue2.id), "Grandchild issue should appear after child issue 2"
+    end
+  end
+
+  def test_min_width_setting_applies
+    issue = Issue.generate!(project_id: 1)
+    child_issue = Issue.generate!(project_id: 1, parent_issue_id: issue.id)
+
+    @request.session[:user_id] = 1
+
+    with_plugin_settings "redmine_issue_view_columns",
+                         columns_min_width: 'Status:300px' do
+      get :show, params: { id: issue.id }
+
+      assert_response :success
+
+      assert_select "td.status", true, "Expected 'Status' column to be present"
+
+      style = css_select("td.status").first['style']
+
+      # Ensure the style attribute contains the min-width property
+      assert_match(/min-width:\s*300px/, style, "Expected 'Status' column to have min-width of 300px")
+    end
+  end
+
+  def test_sorting_criteria_and_order_for_columns
+    parent_issue = Issue.generate!(project_id: 1)
+    issue1 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id, status_id: 1, author_id: 3)
+    issue2 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id, status_id: 1, author_id: 2)
+    issue3 = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id, status_id: 2, author_id: 2)
+
+    @request.session[:user_id] = 1
+
+    with_plugin_settings "redmine_issue_view_columns",
+                         columns_sorting: 'Status:ASC,Author:DESC' do
+      get :show, params: { id: parent_issue.id }
+
+      assert_response :success
+
+      issue_rows = css_select('#issue_tree tr').map(&:to_html)
+
+      issue_ids = issue_rows.map { |row| row[/id="issue-(\d+)"/, 1].to_i }
+
+      sorted_ids = [issue3.id, issue2.id, issue1.id]
+
+      assert_equal sorted_ids, issue_ids, "Issues are not sorted correctly by status and author"
+    end
+  end
+
 end

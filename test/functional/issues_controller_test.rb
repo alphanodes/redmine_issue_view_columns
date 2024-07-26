@@ -196,7 +196,7 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
       # Extract the issue IDs from the rows
       issue_ids = issue_rows.map { |row| row[/id="issue-(\d+)"/, 1].to_i }
 
-      # Assert that child_issue2 appears before child_issue1
+      # Assert that child_issue2 appears after child_issue1
       assert issue_ids.index(child_issue2.id) > issue_ids.index(child_issue1.id), "Child issue 2 should appear before child issue 1"
 
       # Assert that grandchild_issue appears after child_issue2
@@ -245,8 +245,30 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
 
       sorted_ids = [issue3.id, issue2.id, issue1.id]
 
+      #Check that issues were sorted correctly by defined sorting criteria
       assert_equal sorted_ids, issue_ids, "Issues are not sorted correctly by status and author"
     end
   end
 
+  def test_collapsed_issue_is_not_displayed
+    parent_issue = Issue.generate!(project_id: 1)
+    child_issue = Issue.generate!(project_id: 1, parent_issue_id: parent_issue.id)
+    grandchild_issue = Issue.generate!(project_id: 1, parent_issue_id: child_issue.id)
+
+    parent_issue.reload
+    parent_issue.update!(collapsed_ids: child_issue.id.to_s)
+
+    @request.session[:user_id] = 1
+
+    get :show, params: { id: parent_issue.id }
+
+    assert_response :success
+
+    grandchild_issue_row = css_select("tr#issue-#{grandchild_issue.id}").first
+
+    style = grandchild_issue_row['style']
+
+    # Check if the style attribute of children of issues included in collapsed_ids includes 'display: none'
+    assert_match(/display:\s*none/, style, "Expected grandchild issue to have display: none")
+  end
 end

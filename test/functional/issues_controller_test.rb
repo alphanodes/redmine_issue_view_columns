@@ -19,8 +19,7 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
   def setup
     prepare_tests
 
-    @global_settings = { "column_names" => %w[created_on updated_on],
-                         "sort_dir_file_model" => 1 }
+    @global_settings = { "column_names" => %w[created_on updated_on]}
   end
 
   def test_show_author_column_for_related_issues_with_project_setting

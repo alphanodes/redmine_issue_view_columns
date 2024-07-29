@@ -208,6 +208,7 @@ module IssueViewColumnsIssuesHelper
     attribute_parts.inject(object) do |current_object, method|
       current_object.public_send(method) if current_object
     end
+  end
 
   # Renders the list of related issues on the issue details view
   def render_issue_relations(issue, relations)

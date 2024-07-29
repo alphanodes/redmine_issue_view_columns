@@ -24,16 +24,9 @@ module IssueViewColumnsIssuesHelper
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
     rendered_issues = Set.new
 
-    # Determine which rendering method to use based on sorting model
-    if sort_dir_file_model == "1"
-      render_issues_dir_file_model(issue, ->(child, level, hidden) {
-        render_issue_row(child, level, hidden, columns_list, min_widths, manage_relations, collapsed_ids, issue)
-      }, collapsed_ids, rendered_issues, columns_list, field_values)
-    else
-      render_issues_default(issue, ->(child, level, hidden) {
-        render_issue_row(child, level, hidden, columns_list, min_widths, manage_relations, collapsed_ids, issue)
-      }, collapsed_ids, columns_list, field_values)
-    end
+    render_issues(issue, ->(child, level, hidden) {
+      render_issue_row(child, level, hidden, columns_list, min_widths, manage_relations, collapsed_ids, issue)
+    }, collapsed_ids, columns_list, field_values, sort_dir_file_model)
 
     # Append the rendered field values and end the relations table
     s << field_values
@@ -92,70 +85,55 @@ module IssueViewColumnsIssuesHelper
     content_tag('tr', field_content, class: tr_classes, id: "issue-#{child.id}", style: row_style).html_safe
   end
 
-  def render_issues_dir_file_model(issue, render_issue_row, collapsed_ids, rendered_issues, columns_list, field_values)
+  def render_issues(issue, render_issue_row, collapsed_ids, columns_list, field_values, sort_dir_file_model, rendered_issues = Set.new)
     render_issue_with_descendants = lambda do |parent, level, hidden = false|
       issues_with_subissues = []
       issues_without_subissues = []
-
-      # Get direct descendants and sort them
-      direct_descendants = parent.descendants.select { |descendant| descendant.parent_id == parent.id }
-      sorted_issues = sort_issues(direct_descendants, columns_list)
-
-      sorted_issues.each do |child|
-        next if (child.closed? && !issue_columns_with_closed_issues?) || rendered_issues.include?(child.id)
-
-        rendered_issues.add(child.id)
-
-        child_hidden = hidden || collapsed_ids.include?(child.id)
-
-        # Append the folders(child with descendants) before the files(child without descendants)
-        # Traverse sorted issues recursevely
-        if child.descendants.any?
-          issues_with_subissues << render_issue_row.call(child, level, hidden)
-          subissues_with, subissues_without = render_issue_with_descendants.call(child, level + 1, child_hidden)
-          issues_with_subissues.concat(subissues_with)
-          issues_with_subissues.concat(subissues_without)
-        else
-          issues_without_subissues << render_issue_row.call(child, level, child_hidden) if child.parent_id == parent.id
-        end
-      end
-
-      return issues_with_subissues, issues_without_subissues
-    end
-
-    # Start rendering from the top-level issue
-    issues_with_subissues, issues_without_subissues = render_issue_with_descendants.call(issue, 0)
-
-    # Append the rendered issues to the field values
-    field_values << issues_with_subissues.join("").html_safe
-    field_values << issues_without_subissues.join("").html_safe
-  end
-
-  def render_issues_default(issue, render_issue_row, collapsed_ids, columns_list, field_values)
-    render_issue_with_descendants = lambda do |parent, level, hidden = false|
       issues = []
 
       # Get direct descendants and sort them
       direct_descendants = parent.descendants.select { |descendant| descendant.parent_id == parent.id }
       sorted_issues = sort_issues(direct_descendants, columns_list)
 
-      # Traverse sorted issues recursevely
       sorted_issues.each do |child|
-        next if (child.closed? && !issue_columns_with_closed_issues?)
+        next if (child.closed? && !issue_columns_with_closed_issues?) || (rendered_issues.include?(child.id) && sort_dir_file_model == "1")
+
+        rendered_issues.add(child.id)
 
         child_hidden = hidden || collapsed_ids.include?(child.id)
 
-        issues << render_issue_row.call(child, level, hidden)
-        subissues = render_issue_with_descendants.call(child, level + 1, child_hidden)
-        issues.concat(subissues)
+        # Traverse sorted issues recursively
+        if sort_dir_file_model == "1"
+          if child.descendants.any?
+            issues_with_subissues << render_issue_row.call(child, level, hidden)
+            subissues_with, subissues_without = render_issue_with_descendants.call(child, level + 1, child_hidden)
+            issues_with_subissues.concat(subissues_with)
+            issues_with_subissues.concat(subissues_without)
+          else
+            issues_without_subissues << render_issue_row.call(child, level, child_hidden) if child.parent_id == parent.id
+          end
+        else
+          issues << render_issue_row.call(child, level, hidden)
+          subissues = render_issue_with_descendants.call(child, level + 1, child_hidden)
+          issues.concat(subissues)
+        end
       end
 
-      issues
+      if sort_dir_file_model == "1"
+        return issues_with_subissues, issues_without_subissues
+      else
+        return issues
+      end
     end
 
-    # Start rendering from the root issue
-    rendered_issues = render_issue_with_descendants.call(issue, 0, false)
-    field_values << rendered_issues.join("").html_safe
+    if sort_dir_file_model == "1"
+      issues_with_subissues, issues_without_subissues = render_issue_with_descendants.call(issue, 0)
+      field_values << issues_with_subissues.join("").html_safe
+      field_values << issues_without_subissues.join("").html_safe
+    else
+      rendered_issues = render_issue_with_descendants.call(issue, 0, false)
+      field_values << rendered_issues.join("").html_safe
+    end
   end
 
   def sort_issues(issues, columns_list)
@@ -230,7 +208,6 @@ module IssueViewColumnsIssuesHelper
     attribute_parts.inject(object) do |current_object, method|
       current_object.public_send(method) if current_object
     end
-  end
 
   # Renders the list of related issues on the issue details view
   def render_issue_relations(issue, relations)

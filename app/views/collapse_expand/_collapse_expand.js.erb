@@ -3,114 +3,59 @@ let collapsedIds = '<%= @issue.collapsed_ids.to_s %>';
 let issueId = '<%= @issue.id %>';
 
 function collapseExpand(element) {
-  // Helper function to handle the display logic
-  function toggleIssues(targetIssue, targetIssueIdntLevel, show) {
-    const issues = document.getElementsByClassName('hascontextmenu');
-    let startIndex = -1;
-
-    // Find the index of the target issue within issues
-    for (let i = 0; i < issues.length; i++) {
-      if (issues[i] === targetIssue) {
-        startIndex = i;
-        break;
-      }
-    }
-
-    let parentIssue = null;
-    let parentIdntLevel = 0;
-
-    for (let i = startIndex + 1; i < issues.length; i++) {
-      const issue = issues[i];
-      const idntClasses = issue.classList;
-
-      // Check if issue has idnt class and get its level
-      let idntLevel = 0;
-      for (let j = 0; j < idntClasses.length; j++) {
-        const className = idntClasses[j];
-        if (className.startsWith('idnt-')) {
-          idntLevel = parseInt(className.split('-')[1], 10);
-          break;
-        }
-      }
-
-      // Reset parent issue if necessary
-      if (idntLevel <= parentIdntLevel) {
-        parentIssue = null;
-      }
-
-      // Toggle visibility based on the idnt level
-      if (idntLevel > targetIssueIdntLevel) {
-        if (show) {
-          let shouldHide = false;
-          if (parentIssue && parentIssue.querySelector('.icon-toggle-plus')) {
-            shouldHide = true;
-          }
-
-          if (shouldHide) {
-            issue.style.display = 'none';
-          } else {
-            issue.style.display = '';
-          }
-        } else {
-          issue.style.display = 'none';
-        }
-
-        // Update parent issue and idnt level
-        parentIssue = issue;
-        parentIdntLevel = idntLevel;
-      } else {
-        break;
-      }
-    }
-
-    // Apply odd/even classes to visible rows
-    let visibleRowIndex = 0;
-    for (let i = 0; i < issues.length; i++) {
-      const issue = issues[i];
-      if (issue.style.display !== 'none') {
-        // Remove previous odd/even classes
-        issue.classList.remove('odd', 'even');
-        // Add the new odd/even class based on the row index
-        issue.classList.add(visibleRowIndex % 2 === 0 ? 'even' : 'odd');
-        visibleRowIndex++;
-      }
-    }
-  }
-
   // Extract the target issue and its idnt level
-  const targetIssue = element.parentElement.parentElement;
-  let targetIssueIdntLevel = 0;
-  const targetIssueClasses = targetIssue.classList;
-  for (let j = 0; j < targetIssueClasses.length; j++) {
-    const className = targetIssueClasses[j];
-    if (className.startsWith('idnt-')) {
-      targetIssueIdntLevel = parseInt(className.split('-')[1], 10);
-      break;
-    }
-  }
+  const $targetIssue = $(element).closest('.hascontextmenu');
+  const targetIssueIdntLevel = ($targetIssue.attr('class').match(/idnt-(\d+)/) || [0, 0])[1];
 
-  if (element.classList.contains('icon-toggle-minus')) {
-    element.classList.remove('icon-toggle-minus');
-    element.classList.add('icon-toggle-plus');
-    // Add to collapsedIds
-    collapsedIds += targetIssue.id.split('-')[1] + ' ';
-    toggleIssues(targetIssue, targetIssueIdntLevel, false);
-  } else {
-    element.classList.remove('icon-toggle-plus');
-    element.classList.add('icon-toggle-minus');
-    // Remove from collapsedIds
-    collapsedIds = collapsedIds.replace(new RegExp(targetIssue.id.split('-')[1] + '\\s*'), '');
-    toggleIssues(targetIssue, targetIssueIdntLevel, true);
-  }
+  // Toggle icon class
+  const isCollapsing = element.classList.contains('icon-toggle-minus');
+  $(element).toggleClass('icon-toggle-minus icon-toggle-plus');
+
+  // Update collapsedIds
+  const targetIssueId = $targetIssue.attr('id').split('-')[1];
+  isCollapsing ? collapsedIds += targetIssueId + ' ' : collapsedIds = collapsedIds.replace(new RegExp(targetIssueId + '\\s*'), '');
+
+  // Show or hide issues based on the current toggle
+  $targetIssue.nextAll('.hascontextmenu').each(function () {
+    const $issue = $(this);
+    const issueIdntLevel = ($issue.attr('class').match(/idnt-(\d+)/) || [0, 0])[1];
+
+    if (issueIdntLevel > targetIssueIdntLevel) {
+      if (isCollapsing)
+        $issue.hide();
+      else {
+        // Check if any ancestor issue is collapsed
+        let ancestorCollapsed = false;
+        let currentIdntLevel = issueIdntLevel;
+
+        $issue.prevAll('.hascontextmenu').each(function() {
+          const $ancestor = $(this);
+          const ancestorIdntLevel = ($ancestor.attr('class').match(/idnt-(\d+)/) || [0, 0])[1];
+
+          if (ancestorIdntLevel < currentIdntLevel) {
+            if ($ancestor.find('.icon-toggle-plus').length > 0) {
+              ancestorCollapsed = true;
+              return false; // Stop checking further ancestors
+            }
+            currentIdntLevel = ancestorIdntLevel;
+          }
+        });
+        ancestorCollapsed ? $issue.hide() : $issue.show()
+      }
+    } else
+        return false; // Stop when a non-sub-issue is found
+  });
+
+  // Re-apply odd/even classes to visible rows
+  $('.hascontextmenu:visible').each(function (index) {
+    $(this).removeClass('odd even').addClass(index % 2 === 0 ? 'even' : 'odd');
+  });
 
   // Update server with new collapsed IDs
-
-
   Rails.ajax({
     url: `/issue_view_columns/${issueId}/update_collapsed_ids`,
     type: "PATCH",
     data: JSON.stringify({
-      id: issueId,
       collapsed_ids: collapsedIds
     }),
     contentType: "application/json"

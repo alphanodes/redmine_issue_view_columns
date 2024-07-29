@@ -19,7 +19,6 @@ module IssueViewColumnsIssuesHelper
     # Retrieve sorting settings and determine if sorting by directory/file model is enabled
     sort_dir_file_model = RedmineIssueViewColumns.setting(:sort_dir_file_model)
     collapsed_ids = issue.collapsed_ids.to_s.split.map(&:to_i)
-    Rails.logger.info "HELLO " + collapsed_ids.to_s
     field_values = +''
     s = table_start_for_relations columns_list
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
@@ -89,7 +88,7 @@ module IssueViewColumnsIssuesHelper
     field_content << content_tag('td', buttons, class: 'buttons')
 
     # Apply style to hide the row if hidden is true
-    row_style = hidden ? 'display: none;' : 'display: block;'
+    row_style = hidden ? 'display: none;' : ''
     content_tag('tr', field_content, class: tr_classes, id: "issue-#{child.id}", style: row_style).html_safe
   end
 

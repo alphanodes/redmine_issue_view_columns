@@ -181,16 +181,8 @@ module IssueViewColumnsIssuesHelper
         column_name = criterion[:column_name]
         direction = criterion[:direction] == "ASC" ? 1 : -1
 
-        if column_name.start_with?("cf_")
-          # Handle custom fields
-          cf_id = column_name.sub(/^cf_/, "")
-          a_value = CustomValue.where(customized_id: a.id, customized_type: "Issue", custom_field_id: cf_id).first&.value
-          b_value = CustomValue.where(customized_id: b.id, customized_type: "Issue", custom_field_id: cf_id).first&.value
-        else
-          # Handle regular fields
-          a_value = get_nested_attribute_value(a, column_name) rescue nil
-          b_value = get_nested_attribute_value(b, column_name) rescue nil
-        end
+        a_value = column_name.start_with?("cf_") ? a.custom_field_value(column_name.sub(/^cf_/, "")) : get_nested_attribute_value(a, column_name) rescue nil
+        b_value = column_name.start_with?("cf_") ? b.custom_field_value(column_name.sub(/^cf_/, "")) : get_nested_attribute_value(b, column_name) rescue nil
 
         comparison = if a_value.nil? && b_value.nil?
             0

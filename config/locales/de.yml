@@ -15,13 +15,3 @@ de:
   info_issue_view_columns_project_settings: Durch Aktivierung des Projekt-Modul "Spalten in Ticketansicht" kann man individuell für das Projekt Spalten für Untertickets und Ticketbeziehungen festlegen (falls diese vom der systemweiten Einstellung abweichen sollen).
     Wenn die systemweite Einstellung verwendet werden soll, muss das Projekt Module deaktiviert werden.
   label_issue_view_column: Ticketspalte
-  label_sort_dir_file_model: Sortierung nach Ordner-/Dateimodell
-  info_sort_dir_file_model: Aktivieren Sie diese Option, um Probleme nach dem Ordner-/Dateimodell zu sortieren.
-  label_sorting_columns: Sortierkriterien und Spalten-Mindestbreite festlegen
-  info_columns_sorting: "Geben Sie die Sortierreihenfolge für jede Spalte an, in der Reihenfolge der Relevanz. Beispiel: Aktualisierte:DESC, Erstellt:ASC"
-  label_columns_min_width: Mindestbreite für Spalten festlegen
-  info_columns_min_width: "Geben Sie die Mindestbreite für jede Spalte an. Beispiel: Projekt:200px, Status:30vw"
-  access_denied: "Zugriff verweigert"
-  invalid_json_format: "Ungültiges JSON-Format"
-  update_successful: "Aktualisierung erfolgreich"
-  update_failed: "Aktualisierung fehlgeschlagen"

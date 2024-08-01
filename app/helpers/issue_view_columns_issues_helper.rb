@@ -6,16 +6,6 @@ module IssueViewColumnsIssuesHelper
     # no field defined, then use render from core redmine (or whatever by other plugins loaded before this)
     return super if columns_list.count.zero?
 
-    # Retrieve minimum width settings for columns
-    min_width_setting = RedmineIssueViewColumns.setting(:columns_min_width)
-    min_widths = {}
-    if min_width_setting.present?
-      min_width_setting.split(",").each do |column_setting|
-        column_name, min_width = column_setting.split(":").map(&:strip)
-        min_widths[column_name] = min_width
-      end
-    end
-
     # Retrieve sorting settings and determine if sorting by directory/file model is enabled
     sort_dir_file_model = RedmineIssueViewColumns.setting(:sort_dir_file_model)
     collapsed_ids = issue.collapsed_ids.to_s.split.map(&:to_i)
@@ -25,7 +15,7 @@ module IssueViewColumnsIssuesHelper
     rendered_issues = Set.new
 
     render_issues(issue, ->(child, level, hidden) {
-      render_issue_row(child, level, hidden, columns_list, min_widths, manage_relations, collapsed_ids, issue)
+      render_issue_row(child, level, hidden, columns_list, manage_relations, collapsed_ids, issue)
     }, collapsed_ids, columns_list, field_values, sort_dir_file_model)
 
     # Append the rendered field values and end the relations table
@@ -35,7 +25,7 @@ module IssueViewColumnsIssuesHelper
     s.html_safe
   end
 
-  def render_issue_row(child, level, hidden = false, columns_list, min_widths, manage_relations, collapsed_ids, issue)
+  def render_issue_row(child, level, hidden = false, columns_list, manage_relations, collapsed_ids, issue)
     # Construct the row classes with context menu and alternating row colors
     tr_classes = +"hascontextmenu #{child.css_classes}"
     tr_classes << " #{cycle('odd', 'even')}" unless hidden
@@ -71,11 +61,9 @@ module IssueViewColumnsIssuesHelper
 
     field_content << content_tag('td', subject_content, class: 'subject')
 
-    # Add columns with their respective content and minimum width style
+    # Add columns with their respective content
     columns_list.each do |column|
-      column_name = column.caption # Convert symbol to string
-      min_width_style = min_widths[column_name].present? ? "min-width: #{min_widths[column_name]};" : ''
-      field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s, style: min_width_style)
+      field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s)
     end
 
     field_content << content_tag('td', buttons, class: 'buttons')
@@ -143,7 +131,7 @@ module IssueViewColumnsIssuesHelper
     # Build sorting criteria as an array of hashes with keys :column_name and :direction
     sorting_criteria = columns_sorting_setting.split(",").map do |column_setting|
       column_name, direction = column_setting.split(":").map(&:strip)
-      { column_name: caption_to_name(column_name, columns_list).downcase, direction: direction }
+      { column_name: column_name, direction: direction }
     end
 
     # Use the extracted comparison lambda
@@ -190,16 +178,6 @@ module IssueViewColumnsIssuesHelper
       end
       0
     end
-  end
-
-  def caption_to_name(caption, columns_list)
-    # Create a mapping from column caption to column name
-    caption_to_name_map = columns_list.each_with_object({}) do |column, hash|
-      hash[column.caption] = column.name.to_s
-    end
-
-    # Return the column name corresponding to the given caption
-    caption_to_name_map[caption] || caption
   end
 
   # Retrieves a nested attribute value from an object based on a dot-separated attribute path ( used for parent.subject )
@@ -290,11 +268,22 @@ module IssueViewColumnsIssuesHelper
   private
 
   def table_start_for_relations(columns_list)
+    # Retrieve minimum width settings for columns
+    min_width_setting = RedmineIssueViewColumns.setting(:columns_min_width)
+    min_widths = {}
+    if min_width_setting.present?
+      min_width_setting.split(",").each do |column_setting|
+        column_name, min_width = column_setting.split(":").map(&:strip)
+        min_widths[column_name] = min_width
+      end
+    end
+
     s = +'<div class="autoscroll"><table class="list issues odd-even view-columns"><thead>'
 
-    s << content_tag('th', l(:field_subject), class: 'subject')
+    s << content_tag('th', l(:field_subject), class: 'subject', style: min_widths['Subject'].present? ? "min-width: #{min_widths['Subject']};" : '')
     columns_list.each do |column|
-      s << content_tag('th', column.caption, class: column.name)
+      min_width_style = min_widths[column.name.to_s].present? ? "min-width: #{min_widths[column.name.to_s]};" : ''
+      s << content_tag('th', column.caption, class: column.name, style: min_width_style)
     end
 
     s << content_tag('th', '', class: 'buttons')

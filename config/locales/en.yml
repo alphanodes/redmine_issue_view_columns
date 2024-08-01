@@ -25,3 +25,4 @@ en:
   invalid_json_format: "Invalid JSON format"
   update_successful: "Update successful"
   update_failed: "Update failed"
+  label_sorting_priority_columns: Column priority in sorting

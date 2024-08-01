@@ -1,0 +1,162 @@
+<% columns = IssueQuery.new.available_inline_columns %>
+<% column_captions = columns.each_with_object({}) do |column, hash|
+     hash[column.name.to_s] = column.caption
+   end %>
+
+<% #Retrieve settings %>
+<% settings = @settings || [] %>
+<% column_settings = settings.find { |setting| setting[0] == "issue_list_defaults" } %>
+<% column_names = column_settings&.dig(1, "column_names") || [] %>
+<% columns_sorting = settings["columns_sorting"] || "" %>
+<% columns_min_width = settings["columns_min_width"] || "" %>
+
+<% #Re-arrange column_names based on sorting order %>
+<% sorting_columns = columns_sorting.split(",").map { |criterion| criterion.split(":").first.strip } %>
+<% column_names = column_names = sorting_columns + (column_names - sorting_columns) %>
+
+<fieldset class="box" id="sorting_criteria_box">
+  <legend><%= l :label_sorting_columns %></legend>
+  <% selected_tag_id = "sorting_columns" %>
+  <% tag_name = "columns[]" %>
+
+  <div class="buttons" style="display:grid">
+    <input type="button" value="⇈" onclick="moveOptionss('top');" />
+    <input type="button" value="↑" onclick="moveOptionss('up');" />
+    <input type="button" value="↓" onclick="moveOptionss('down');" />
+    <input type="button" value="⇊" onclick="moveOptionss('bottom');" />
+  </div>
+
+  <div class="query-columns">
+    <p style="padding-left:0"><%= l(:label_sorting_priority_columns) %></p>
+    <%= select_tag tag_name,
+                   options_for_select(column_names.map { |name| [column_captions[name], name] }),
+                   id: selected_tag_id,
+                   multiple: true,
+                   size: 12,
+                   class: "capitalize-text" %>
+  </div>
+
+  <div>
+    <div id="input_header"><h3>Column name</h3><h3>Sorting order</h3><h3>Min width</h3></div>
+    <div>
+      <% column_names.each do |column| %>
+        <div class="input-group" id="<%= column %>_group">
+          <select id="<%= column %>_sort" name="<%= column %>_sort">
+            <option value="null">No Sort</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+
+          <label for="<%= column %>_input" style="margin-left: 0;width:180px"><%= column_captions[column] || column.capitalize %></label>
+          <input type="text" id="<%= column %>_input" name="<%= column %>_input" placeholder="min-width" />
+        </div>
+      <% end %>
+    </div>
+  </div>
+</fieldset>
+
+<%= hidden_field_tag "settings[columns_sorting]", nil, id: "columns_sorting_field" %>
+<%= hidden_field_tag "settings[columns_min_width]", nil, id: "columns_min_width_field" %>
+
+<script>
+  function updateHiddenFields() {
+    const selectedOptions = $('#sorting_columns option');
+    let sortingString = '', widthString = '';
+
+    selectedOptions.each(function() {
+      const columnName = $(this).val();
+      const sortOrder = document.getElementById(columnName + '_sort').value;
+      const minWidth = document.getElementById(columnName + '_input').value;
+      if (sortOrder !== "null")
+        sortingString += `${columnName}:${sortOrder.toUpperCase()},`;
+      if (minWidth)
+        widthString += `${columnName}:${minWidth},`;
+    });
+
+    $('input[name="settings[columns_sorting]"]').val(sortingString.slice(0, -1) /* Remove the last comma */);
+    $('input[name="settings[columns_min_width]"]').val(widthString.slice(0, -1) /* Remove the last comma */);
+  }
+
+  $(document).ready(function() {
+    // Parse columns_min_width string
+    const columnsMinWidthString = `<%= columns_min_width %>`;
+    const columnsMinWidth = columnsMinWidthString
+      ? columnsMinWidthString.split(',').reduce((acc, curr) => {
+          const [columnName, width] = curr.split(':');
+          if (columnName && width) acc[columnName.trim()] = width.trim();
+          return acc;
+        }, {})
+      : {};
+
+    // Populate min-width inputs
+    $.each(columnsMinWidth, function(columnName, minWidth) {
+      const inputElement = document.getElementById(columnName + '_input');
+      if (inputElement) 
+        inputElement.value=minWidth;
+    });
+
+    // Parse columns_sorting string
+    const columnsSortingString = `<%= columns_sorting %>`;
+    const columnsSorting = columnsSortingString
+      ? columnsSortingString.split(',').map(criterion => {
+          const [columnName, order] = criterion.split(':');
+          return columnName && order ? { [columnName.trim()]: order.trim().toLowerCase() } : null;
+        }).filter(Boolean)
+      : [];
+
+    // Populate sorting options
+    $.each(columnsSorting, function(index, sorting) {
+      const columnName = Object.keys(sorting)[0];
+      const sortOrder = sorting[columnName];
+      const sortElement = document.getElementById(columnName + '_sort');
+      if (sortElement)
+        sortElement.value=sortOrder;
+    });
+
+    const applyButton = document.querySelector('input[type="submit"][name="commit"]');
+    if (applyButton) 
+    applyButton.addEventListener('click', updateHiddenFields);
+  });
+
+  function moveOptionss(direction) {
+    const selectElement = document.getElementById('sorting_columns');
+    const selectedOptions = Array.from(selectElement.selectedOptions);
+    const selectedIndices = selectedOptions.map(option => Array.from(selectElement.options).indexOf(option));
+    selectedIndices.sort((a, b) => b - a); // Sort in descending order to handle multiple selections
+
+    selectedIndices.forEach(index => {
+      const option = selectElement.options[index];
+      const inputGroup = document.getElementById(option.value + '_group');
+      if (!inputGroup) return;
+
+      switch (direction) {
+        case 'top':
+          selectElement.insertBefore(option, selectElement.firstChild);
+          inputGroup.parentElement.prepend(inputGroup);
+          break;
+        case 'bottom':
+          selectElement.appendChild(option);
+          inputGroup.parentElement.appendChild(inputGroup);
+          break;
+        case 'up':
+          const prevOption = option.previousElementSibling;
+          if (prevOption) {
+            selectElement.insertBefore(option, prevOption);
+            const prevGroup = inputGroup.previousElementSibling;
+            if (prevGroup)
+              inputGroup.parentElement.insertBefore(inputGroup, prevGroup);
+          }
+          break;
+       case 'down':
+          const nextOption = option.nextElementSibling;
+          const nextGroup = inputGroup.nextElementSibling;
+          if (nextOption && nextGroup) {
+            selectElement.insertBefore(nextOption, option);
+            selectElement.insertBefore(nextOption.nextElementSibling, option.nextElementSibling);
+            inputGroup.parentElement.insertBefore(inputGroup, nextGroup.nextElementSibling);
+          }
+          break;
+      }
+    });
+  }
+</script>

@@ -30,20 +30,4 @@ br
 
 br
 
-p
-  = additionals_settings_textfield :columns_min_width,
-                                   value: @settings[:columns_min_width],
-                                   label: l(:label_columns_min_width),
-                                   tag_name: 'settings[columns_min_width]'
-  em.info
-    = l :info_columns_min_width
-
-br
-
-p
-  = additionals_settings_textfield :columns_sorting,
-                                   value: @settings[:columns_sorting],
-                                   label: l(:label_sorting_columns),
-                                   tag_name: 'settings[columns_sorting]'
-  em.info
-    = l :info_columns_sorting
+= render 'min_width_sort_criteria'

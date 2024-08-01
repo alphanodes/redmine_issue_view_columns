@@ -128,10 +128,11 @@ module IssueViewColumnsIssuesHelper
     columns_sorting_setting = RedmineIssueViewColumns.setting(:columns_sorting)
     return issues unless columns_sorting_setting.present?
 
-    # Build sorting criteria as an array of hashes with keys :column_name and :direction
+    # Build sorting criteria as an array of hashes with keys :column and :direction
     sorting_criteria = columns_sorting_setting.split(",").map do |column_setting|
       column_name, direction = column_setting.split(":").map(&:strip)
-      { column_name: column_name, direction: direction }
+      column = columns_list.find { |col| col.name.to_s == column_name }
+      { column: column, direction: direction }
     end
 
     # Use the extracted comparison lambda
@@ -144,34 +145,34 @@ module IssueViewColumnsIssuesHelper
   def comparison_lambda(sorting_criteria)
     lambda do |a, b|
       sorting_criteria.each do |criterion|
-        column_name = criterion[:column_name]
+        column = criterion[:column]
         direction = criterion[:direction] == "ASC" ? 1 : -1
 
-        a_value = column_name.is_a?(QueryCustomFieldColumn) ? a.custom_field_value(column_name.sub(/^cf_/, "")) : get_nested_attribute_value(a, column_name) rescue nil
-        b_value = column_name.is_a?(QueryCustomFieldColumn) ? b.custom_field_value(column_name.sub(/^cf_/, "")) : get_nested_attribute_value(b, column_name) rescue nil
+        a_value = get_issue_field_value(a, column)
+        b_value = get_issue_field_value(b, column)
 
         comparison = if a_value.nil? && b_value.nil?
-            0
-          elsif a_value.nil?
-            -1
-          elsif b_value.nil?
-            1
+          0
+        elsif a_value.nil?
+          -1
+        elsif b_value.nil?
+          1
+        else
+          case a_value
+          when Numeric
+            a_value <=> b_value
+          when String
+            a_value.to_s <=> b_value.to_s
+          when Enumerable
+            a_value.length <=> b_value.length
+          when User
+            (a_value.firstname + a_value.lastname) <=> (b_value.firstname + b_value.lastname)
+          when ActiveRecord::Base
+            a_value.respond_to?(:name) ? a_value.name <=> b_value.name : a_value.id <=> b_value.id
           else
-            case a_value
-            when Numeric
-              a_value <=> b_value
-            when String
-              a_value.to_s <=> b_value.to_s
-            when Enumerable
-              a_value.length <=> b_value.length
-            when User
-              (a_value.firstname + a_value.lastname) <=> (b_value.firstname + b_value.lastname)
-            when ActiveRecord::Base
-              a_value.respond_to?(:name) ? a_value.name <=> b_value.name : a_value.id <=> b_value.id
-            else
-              a_value.to_s <=> b_value.to_s
-            end
+            a_value.to_s <=> b_value.to_s
           end
+        end
 
         # If comparison is not zero, return it adjusted by direction
         return comparison * direction if comparison != 0
@@ -180,11 +181,13 @@ module IssueViewColumnsIssuesHelper
     end
   end
 
-  # Retrieves a nested attribute value from an object based on a dot-separated attribute path ( used for parent.subject )
-  def get_nested_attribute_value(object, attribute_path)
-    attribute_parts = attribute_path.split(".")
-    attribute_parts.inject(object) do |current_object, method|
-      current_object.public_send(method) if current_object
+  def get_issue_field_value(issue, column)
+    if column.is_a?(QueryCustomFieldColumn)
+      return issue.custom_field_value(column.custom_field[:id])
+    elsif issue.has_attribute?(column.name)
+      return issue[column.name]
+    else
+      return issue.public_send(column.name)
     end
   end
 

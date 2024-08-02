@@ -14,7 +14,7 @@
 <% sorting_columns = columns_sorting.split(",").map { |criterion| criterion.split(":").first.strip } %>
 <% column_names = column_names = sorting_columns + (column_names - sorting_columns) %>
 
-<fieldset class="box" id="sorting_criteria_box">
+<fieldset class="box" id="sorting_criteria_box_issue_view_columns_settings">
   <legend><%= l :label_sorting_columns %></legend>
   <% selected_tag_id = "sorting_columns" %>
   <% tag_name = "columns[]" %>
@@ -33,11 +33,15 @@
                    id: selected_tag_id,
                    multiple: true,
                    size: 12,
-                   class: "capitalize-text" %>
+                   class: "capitalize-text_box_issue_view_columns_settings" %>
   </div>
 
   <div>
-    <div id="input_header"><h3>Column name</h3><h3>Sorting order</h3><h3>Min width</h3></div>
+    <div id="input_header_box_issue_view_columns_settings">
+      <h3><%= l('column_name_setting_label') %></h3>
+      <h3><%= l('sorting_order_setting_label') %></h3>
+      <h3><%= l('min_width_setting_label') %></h3>
+    </div>
     <div>
       <% column_names.each do |column| %>
         <div class="input-group" id="<%= column %>_group">

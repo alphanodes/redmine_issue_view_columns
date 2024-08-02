@@ -36,17 +36,17 @@
   }
 }
 
-#sorting_criteria_box {
+#sorting_criteria_box_issue_view_columns_settings {
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
 
-.capitalize-text {
+.capitalize-text_box_issue_view_columns_settings {
   text-transform: capitalize;
 }
 
-#input_header {
+#input_header_box_issue_view_columns_settings {
   display: flex;
   justify-content: space-around;
   align-items: center;

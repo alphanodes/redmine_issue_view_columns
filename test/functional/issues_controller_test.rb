@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path "../../test_helper", __FILE__
+require File.expand_path '../../test_helper', __FILE__
 
 class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
   fixtures :users, :email_addresses, :roles,
@@ -19,7 +19,7 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
   def setup
     prepare_tests
 
-    @global_settings = { "column_names" => %w[created_on updated_on] }
+    @global_settings = { 'column_names' => %w[created_on updated_on] }
   end
 
   def test_show_author_column_for_related_issues_with_project_setting
@@ -28,7 +28,7 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
     get :show, params: { id: issue.id }
 
     assert_response :success
-    assert_select "#relations td.author"
+    assert_select '#relations td.author'
   end
 
   def test_show_default_columns_for_related_issues_without_global_setting
@@ -37,14 +37,14 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
 
     IssueRelation.create! issue_from: related_issue,
                           issue_to: issue,
-                          relation_type: "relates"
+                          relation_type: 'relates'
 
     @request.session[:user_id] = 1
-    with_plugin_settings "redmine_issue_view_columns", issue_list_defaults: {} do
+    with_plugin_settings 'redmine_issue_view_columns', issue_list_defaults: {} do
       get :show, params: { id: issue.id }
 
       assert_response :success
-      assert_select "#relations td.due_date"
+      assert_select '#relations td.due_date'
     end
   end
 
@@ -54,16 +54,16 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
 
     IssueRelation.create! issue_from: related_issue,
                           issue_to: issue,
-                          relation_type: "relates"
+                          relation_type: 'relates'
 
     @request.session[:user_id] = 1
-    with_plugin_settings "redmine_issue_view_columns",
+    with_plugin_settings 'redmine_issue_view_columns',
                          issue_list_defaults: @global_settings do
       get :show, params: { id: issue.id }
 
       assert_response :success
-      assert_select "#relations td.created_on"
-      assert_select "#relations td.updated_on"
+      assert_select '#relations td.created_on'
+      assert_select '#relations td.updated_on'
     end
   end
 
@@ -74,7 +74,7 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
     get :show, params: { id: issue.id }
 
     assert_response :success
-    assert_select "#issue_tree td.author"
+    assert_select '#issue_tree td.author'
   end
 
   def test_show_default_columns_for_subtasks_without_global_setting
@@ -82,12 +82,12 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
     Issue.generate! project_id: 2, parent_issue_id: issue.id
 
     @request.session[:user_id] = 1
-    with_plugin_settings "redmine_issue_view_columns",
+    with_plugin_settings 'redmine_issue_view_columns',
                          issue_list_defaults: {} do
       get :show, params: { id: issue.id }
 
       assert_response :success
-      assert_select "#issue_tree td.due_date"
+      assert_select '#issue_tree td.due_date'
     end
   end
 
@@ -96,13 +96,13 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
     Issue.generate! project_id: 2, parent_issue_id: issue.id
 
     @request.session[:user_id] = 1
-    with_plugin_settings "redmine_issue_view_columns",
+    with_plugin_settings 'redmine_issue_view_columns',
                          issue_list_defaults: @global_settings do
       get :show, params: { id: issue.id }
 
       assert_response :success
-      assert_select "#issue_tree td.created_on"
-      assert_select "#issue_tree td.updated_on"
+      assert_select '#issue_tree td.created_on'
+      assert_select '#issue_tree td.updated_on'
     end
   end
 
@@ -112,16 +112,16 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
     related_issue = Issue.generate! project_id: 2, status_id: 1
     open_relation = IssueRelation.create! issue_from: related_issue,
                                           issue_to: issue,
-                                          relation_type: "relates"
+                                          relation_type: 'relates'
 
     closed_issue = Issue.generate! project_id: 2, status_id: 5
     closed_relation = IssueRelation.create! issue_from: closed_issue,
                                             issue_to: issue,
-                                            relation_type: "relates"
+                                            relation_type: 'relates'
 
     @request.session[:user_id] = 1
-    with_plugin_settings "redmine_issue_view_columns",
-                         issue_scope: "without_closed_by_default",
+    with_plugin_settings 'redmine_issue_view_columns',
+                         issue_scope: 'without_closed_by_default',
                          issue_list_defaults: @global_settings do
       get :show, params: { id: issue.id }
 
@@ -138,8 +138,8 @@ class IssuesControllerTest < RedmineIssueViewColumns::ControllerTest
     closed_issue = Issue.generate! project_id: 1, parent_issue_id: issue.id, status_id: 5
 
     @request.session[:user_id] = 1
-    with_plugin_settings "redmine_issue_view_columns",
-                         issue_scope: "without_closed_by_default",
+    with_plugin_settings 'redmine_issue_view_columns',
+                         issue_scope: 'without_closed_by_default',
                          issue_list_defaults: @global_settings do
       get :show, params: { id: issue.id }
 

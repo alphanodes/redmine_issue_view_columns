@@ -26,3 +26,10 @@ en:
   update_successful: "Update successful"
   update_failed: "Update failed"
   label_sorting_priority_columns: Column priority in sorting
+  column_name: "Column name"
+  sorting_order: "Sorting order"
+  min_width: "Min width"
+  column_name_setting_label: "Column Name"
+  sorting_order_setting_label: "Sorting Order"
+  min_width_setting_label: "Minimum Width"
+  

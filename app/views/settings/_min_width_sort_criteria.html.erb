@@ -46,9 +46,9 @@
       <% column_names.each do |column| %>
         <div class="input-group" id="<%= column %>_group">
           <select id="<%= column %>_sort" name="<%= column %>_sort">
-            <option value="null">No Sort</option>
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+            <option value="null"><%= l('no_sort_sorting_option') %></option>
+            <option value="asc"><%= l('ascending_sorting_option') %></option>
+            <option value="desc"><%= l('descending_sorting_option') %></option>
           </select>
 
           <label for="<%= column %>_input" style="margin-left: 0;width:180px"><%= column_captions[column] || column.capitalize %></label>

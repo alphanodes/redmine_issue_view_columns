@@ -32,3 +32,6 @@ en:
   column_name_setting_label: "Column Name"
   sorting_order_setting_label: "Sorting Order"
   min_width_setting_label: "Minimum Width"
+  no_sort_sorting_option: "No Sort"
+  ascending_sorting_option: "Ascending"
+  descending_sorting_option: "Descending"

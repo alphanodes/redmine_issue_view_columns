@@ -19,7 +19,7 @@ class I18nTest < RedmineIssueViewColumns::TestCase
   end
 
   def test_locales_validness
-    lang_files_count = Dir[Rails.root.join('plugins/redmine_issue_view_columns/config/locales/*.yml')].size
+    lang_files_count = Rails.root.glob('plugins/redmine_issue_view_columns/config/locales/*.yml').size
 
     assert_equal 2, lang_files_count
 

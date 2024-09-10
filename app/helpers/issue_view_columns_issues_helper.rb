@@ -9,7 +9,7 @@ module IssueViewColumnsIssuesHelper
     # Retrieve sorting settings and determine if sorting by directory/file model is enabled
     sort_dir_file_model = RedmineIssueViewColumns.setting(:sort_dir_file_model)
     collapsed_ids = issue.collapsed_ids.to_s.split.map(&:to_i)
-    field_values = +''
+    field_values = +""
     s = table_start_for_relations columns_list
     manage_relations = User.current.allowed_to? :manage_subtasks, issue.project
     rendered_issues = Set.new
@@ -28,49 +28,56 @@ module IssueViewColumnsIssuesHelper
   def render_issue_row(child, level, hidden = false, columns_list, manage_relations, collapsed_ids, issue)
     # Construct the row classes with context menu and alternating row colors
     tr_classes = +"hascontextmenu #{child.css_classes}"
-    tr_classes << " #{cycle('odd', 'even')}" unless hidden
+    tr_classes << " #{cycle("odd", "even")}" unless hidden
     tr_classes << " idnt-#{level}" if level.positive?
 
     # Generate buttons for deleting if the user has the right permissions
     buttons = if manage_relations
         link_to l(:label_delete_link_to_subtask),
                 issue_path(id: child.id,
-                           issue: { parent_issue_id: '' },
+                           issue: { parent_issue_id: "" },
                            back_url: issue_path(issue.id),
-                           no_flash: '1'),
+                           no_flash: "1"),
                 method: :put,
                 data: { confirm: l(:text_are_you_sure) },
                 title: l(:label_delete_link_to_subtask),
-                class: 'icon-only icon-link-break'
+                class: "icon-only icon-link-break"
       else
-        ''.html_safe
+        "".html_safe
       end
     buttons << link_to_context_menu
 
     # Build the content for each table cell
-    field_content = content_tag('td', check_box_tag('ids[]', child.id, false, id: nil), class: 'checkbox')
+    field_content = content_tag("td", check_box_tag("ids[]", child.id, false, id: nil), class: "checkbox")
 
-    if child.descendants.any?
+    # If all children are closed and hidden, do not show the expand/collapse button
+    with_closed_issues = (params[:with_closed_issues] == "true")
+    status_column = columns_list.find { |column| column.instance_variable_get(:@name) == :status }
+    all_descendants_closed = child.descendants.all? do |descendant|
+      column_content(status_column, descendant) == "Closed"
+    end
+
+    if child.descendants.any? && (!all_descendants_closed || with_closed_issues)
       # Generate toggle icon for expanding/collapsing subissues
-      icon_class = collapsed_ids.include?(child.id) ? 'icon icon-toggle-plus' : 'icon icon-toggle-minus'
-      expand_icon = content_tag('span', '', class: icon_class, onclick: 'collapseExpand(this)')
+      icon_class = collapsed_ids.include?(child.id) ? "icon icon-toggle-plus" : "icon icon-toggle-minus"
+      expand_icon = content_tag("span", "", class: icon_class, onclick: "collapseExpand(this)")
       subject_content = "#{expand_icon} #{link_to_issue(child, project: (issue.project_id != child.project_id))}".html_safe
     else
       subject_content = link_to_issue(child, project: (issue.project_id != child.project_id))
     end
 
-    field_content << content_tag('td', subject_content, class: 'subject')
+    field_content << content_tag("td", subject_content, class: "subject")
 
     # Add columns with their respective content
     columns_list.each do |column|
-      field_content << content_tag('td', column_content(column, child), class: column.css_classes.to_s)
+      field_content << content_tag("td", column_content(column, child), class: column.css_classes.to_s)
     end
 
-    field_content << content_tag('td', buttons, class: 'buttons')
+    field_content << content_tag("td", buttons, class: "buttons")
 
     # Apply style to hide the row if hidden is true
-    row_style = hidden ? 'display: none;' : ''
-    content_tag('tr', field_content, class: tr_classes, id: "issue-#{child.id}", style: row_style).html_safe
+    row_style = hidden ? "display: none;" : ""
+    content_tag("tr", field_content, class: tr_classes, id: "issue-#{child.id}", style: row_style).html_safe
   end
 
   def render_issues(issue, render_issue_row, collapsed_ids, columns_list, field_values, sort_dir_file_model, rendered_issues = Set.new)
@@ -199,32 +206,32 @@ module IssueViewColumnsIssuesHelper
       other_issue = relation.other_issue issue
       next if other_issue.closed? && !issue_columns_with_closed_issues?
 
-      tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'} #{relation.css_classes_for other_issue}"
+      tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle "odd", "even"} #{relation.css_classes_for other_issue}"
       buttons = if manage_relations
-                  link_to l(:label_relation_delete),
-                          relation_path(relation),
-                          remote: true,
-                          method: :delete,
-                          data: { confirm: l(:text_are_you_sure) },
-                          title: l(:label_relation_delete),
-                          class: 'icon-only icon-link-break'
-                else
-                  ''.html_safe
-                end
+          link_to l(:label_relation_delete),
+                  relation_path(relation),
+                  remote: true,
+                  method: :delete,
+                  data: { confirm: l(:text_are_you_sure) },
+                  title: l(:label_relation_delete),
+                  class: "icon-only icon-link-break"
+        else
+          "".html_safe
+        end
       buttons << link_to_context_menu
 
       subject_content = relation.to_s(@issue) { |other| link_to_issue other, project: Setting.cross_project_issue_relations? }.html_safe
 
-      field_content = content_tag('td', check_box_tag('ids[]', other_issue.id, false, id: nil), class: 'checkbox') +
-                      content_tag('td', subject_content, class: 'subject')
+      field_content = content_tag("td", check_box_tag("ids[]", other_issue.id, false, id: nil), class: "checkbox") +
+                      content_tag("td", subject_content, class: "subject")
 
       columns_list.each do |column|
-        field_content << content_tag('td', column_content(column, other_issue), class: column.css_classes.to_s)
+        field_content << content_tag("td", column_content(column, other_issue), class: column.css_classes.to_s)
       end
 
-      field_content << content_tag('td', buttons, class: 'buttons')
+      field_content << content_tag("td", buttons, class: "buttons")
 
-      s << content_tag('tr', field_content,
+      s << content_tag("tr", field_content,
                        id: "relation-#{relation.id}",
                        class: tr_classes)
     end
@@ -243,16 +250,16 @@ module IssueViewColumnsIssuesHelper
     issue_scope = RedmineIssueViewColumns.setting :issue_scope
     return true if issue_scope_with_closed? issue_scope
 
-    @issue_columns_with_closed_issues = if issue_scope == 'without_closed_by_default'
-                                          RedminePluginKit.true? params[:with_closed_issues]
-                                        else
-                                          RedminePluginKit.false? params[:without_closed_issues]
-                                        end
+    @issue_columns_with_closed_issues = if issue_scope == "without_closed_by_default"
+        RedminePluginKit.true? params[:with_closed_issues]
+      else
+        RedminePluginKit.false? params[:without_closed_issues]
+      end
   end
 
   def link_to_closed_issues(issue, issue_scope)
-    css_class = 'closed-issue-switcher'
-    if issue_scope == 'without_closed_by_default'
+    css_class = "closed-issue-switcher"
+    if issue_scope == "without_closed_by_default"
       if issue_columns_with_closed_issues?
         link_to l(:label_hide_closed_issues), issue_path(issue), class: "#{css_class} hide-switch"
       else
@@ -280,19 +287,19 @@ module IssueViewColumnsIssuesHelper
 
     s = +'<div class="autoscroll"><table class="list issues odd-even view-columns"><thead>'
 
-    s << content_tag('th', l(:field_subject), class: 'subject', style: min_widths['Subject'].present? ? "min-width: #{min_widths['Subject']};" : '')
+    s << content_tag("th", l(:field_subject), class: "subject", style: min_widths["Subject"].present? ? "min-width: #{min_widths["Subject"]};" : "")
     columns_list.each do |column|
-      min_width_style = min_widths[column.name.to_s].present? ? "min-width: #{min_widths[column.name.to_s]};" : ''
-      s << content_tag('th', column.caption, class: column.name, style: min_width_style)
+      min_width_style = min_widths[column.name.to_s].present? ? "min-width: #{min_widths[column.name.to_s]};" : ""
+      s << content_tag("th", column.caption, class: column.name, style: min_width_style)
     end
 
-    s << content_tag('th', '', class: 'buttons')
-    s << '</thead><tbody>'
+    s << content_tag("th", "", class: "buttons")
+    s << "</thead><tbody>"
     s
   end
 
   def table_end_for_relations
-    '</tbody></table></div>'
+    "</tbody></table></div>"
   end
 
   def get_fields_for_project(issue)

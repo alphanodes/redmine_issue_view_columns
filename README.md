@@ -43,7 +43,7 @@ Uninstall `redmine_issue_view_columns` plugin.
 ## License
 
 This plugin is licensed under the terms of GNU/GPL v2.
-See LICENSE for details.
+See [LICENSE](LICENSE) for details.
 
 ## Redmine Copyright
 

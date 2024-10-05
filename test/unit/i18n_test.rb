@@ -19,22 +19,10 @@ class I18nTest < RedmineIssueViewColumns::TestCase
   end
 
   def test_locales_validness
-    lang_files_count = Rails.root.glob('plugins/redmine_issue_view_columns/config/locales/*.yml').size
-
-    assert_equal 2, lang_files_count
-
-    valid_languages.each do |lang|
-      assert set_language_if_valid(lang)
-      case lang.to_s
-      when 'en'
-
-        assert_equal 'Scope', l(:label_view_columns_issue_scope)
-      when 'de'
-
-        assert_not l(:label_view_columns_issue_scope) == 'Scope', lang
-      end
-    end
-
-    set_language_if_valid 'en'
+    assert_locales_validness plugin: 'redmine_issue_view_columns',
+                             file_cnt: 2,
+                             locales: %w[de],
+                             control_string: :label_view_columns_issue_scope,
+                             control_english: 'Scope'
   end
 end

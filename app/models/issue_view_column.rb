@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IssueViewColumn < AdditionalsApplicationRecord
+class IssueViewColumn < ApplicationRecord
   belongs_to :project
 
   scope :sorted, -> { order :position }

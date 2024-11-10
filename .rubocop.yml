@@ -4,8 +4,8 @@ require:
   - rubocop-minitest
 
 AllCops:
-  TargetRubyVersion: 2.7
-  TargetRailsVersion: 6.1
+  TargetRubyVersion: 3.1
+  TargetRailsVersion: 7.2
   NewCops: enable
 
 Rails:
@@ -86,7 +86,6 @@ Style/AutoResourceCleanup:
 Style/ExpandPathArguments:
   Enabled: true
   Exclude:
-    - additionals.gemspec
     - test/**/*
 
 Style/FrozenStringLiteralComment:
@@ -105,7 +104,7 @@ Style/OptionHash:
     - parameters
     - settings
   Exclude:
-    - lib/additionals/patches/*.rb
+    - lib/redmine_issue_view_columns/patches/*.rb
 
 # postgresql and mysql are supported
 # autodetect does not work without database configuration
@@ -138,10 +137,6 @@ Naming/VariableNumber:
   Enabled: true
   Exclude:
     - 'test/**/*'
-
-Style/StringConcatenation:
-  Exclude:
-    - 'app/views/additionals/_select2_ajax_call.*'
 
 # see https://github.com/rubocop/rubocop-rails/issues/578
 # redmine does not use load_defaults: https://rails.rubystyle.guide/#config-defaults

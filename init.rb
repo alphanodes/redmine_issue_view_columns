@@ -9,10 +9,10 @@ Redmine::Plugin.register :redmine_issue_view_columns do
   author_url 'https://alphanodes.com/'
   description 'Customize shown columns in subtasks and related issues on issue page'
   version RedmineIssueViewColumns::VERSION
-  requires_redmine version_or_higher: '5.0'
+  requires_redmine version_or_higher: '5.1' # redmine 6.0 is required, but version is not set in redmine source yet
 
   begin
-    requires_redmine_plugin :additionals, version_or_higher: '3.2.0'
+    requires_redmine_plugin :additionals, version_or_higher: '4.0.0'
   rescue Redmine::PluginNotFound
     raise 'Please install additionals plugin (https://github.com/alphanodes/additionals)'
   end

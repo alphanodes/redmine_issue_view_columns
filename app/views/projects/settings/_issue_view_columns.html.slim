@@ -7,7 +7,9 @@
       legend = l :label_select_issue_view_columns
 
       .contextual
-        = link_to l(:label_administration), plugin_settings_path(id: 'redmine_issue_view_columns'), class: 'icon icon-settings'
+        = link_to sprite_icon('settings', l(:label_administration)),
+                  plugin_settings_path(id: 'redmine_issue_view_columns'),
+                  class: 'icon icon-settings'
 
       p = l :info_issue_view_columns_project_settings
 

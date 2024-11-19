@@ -8,7 +8,7 @@
 #selected_settings_issue_view_columns,
 #available_c,
 #selected_c {
-    width: 250px !important;
+  width: 250px !important;
 }
 
 @media screen and (max-width: 899px) {

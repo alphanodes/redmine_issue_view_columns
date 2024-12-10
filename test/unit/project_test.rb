@@ -3,14 +3,6 @@
 require File.expand_path '../../test_helper', __FILE__
 
 class ProjectTest < RedmineIssueViewColumns::TestCase
-  fixtures :projects, :trackers, :issue_statuses, :issues,
-           :journals, :journal_details,
-           :enumerations, :users, :issue_categories,
-           :projects_trackers,
-           :roles, :member_roles, :members,
-           :enabled_modules, :groups_users,
-           :workflows, :issue_view_columns
-
   def setup
     prepare_tests
     User.current = nil

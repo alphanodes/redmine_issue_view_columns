@@ -14,6 +14,7 @@ if ENV['COVERAGE']
 end
 
 require File.expand_path "#{File.dirname __FILE__}/../../../test/test_helper"
+require File.expand_path "#{File.dirname __FILE__}/../../additionals/test/global_fixtures_helper"
 require File.expand_path "#{File.dirname __FILE__}/../../additionals/test/global_test_helper"
 require File.expand_path "#{File.dirname __FILE__}/../../additionals/test/crud_controller_base"
 
@@ -34,27 +35,32 @@ module RedmineIssueViewColumns
   end
 
   module PluginFixturesLoader
-    def fixtures(*table_names)
-      dir = "#{File.dirname __FILE__}/fixtures/"
-      table_names.each do |x|
-        ActiveRecord::FixtureSet.create_fixtures dir, x if File.exist? "#{dir}/#{x}.yml"
-      end
-      super table_names
+    include Additionals::GlobalFixturesHelper
+
+    def plugin_fixture_path
+      "#{File.dirname __FILE__}/fixtures"
+    end
+
+    def plugin_fixtures_list
+      %i[issue_view_columns]
     end
   end
 
   class ControllerTest < Redmine::ControllerTest
     include RedmineIssueViewColumns::TestHelper
     extend PluginFixturesLoader
+    fixtures(*fixtures_list)
   end
 
   class TestCase < ActiveSupport::TestCase
     include RedmineIssueViewColumns::TestHelper
     extend PluginFixturesLoader
+    fixtures(*fixtures_list)
   end
 
   class IntegrationTest < Redmine::IntegrationTest
     include RedmineIssueViewColumns::TestHelper
     extend PluginFixturesLoader
+    fixtures(*fixtures_list)
   end
 end

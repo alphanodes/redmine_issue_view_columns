@@ -14,7 +14,7 @@ module IssueViewColumnsIssuesHelper
     issue_list(issue.descendants.visible.preload(:status, :priority, :tracker, :assigned_to).sort_by(&:lft)) do |child, level|
       next if child.closed? && !issue_columns_with_closed_issues?
 
-      tr_classes = +"hascontextmenu #{child.css_classes} #{cycle 'odd', 'even'}"
+      tr_classes = "hascontextmenu #{child.css_classes} #{cycle 'odd', 'even'}"
       tr_classes << " idnt idnt-#{level}" if level.positive?
 
       buttons = if manage_relations

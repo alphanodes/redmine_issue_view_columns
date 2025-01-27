@@ -38,7 +38,7 @@ Restart Redmine (application server) and you should see the plugin show up in th
 Uninstall `redmine_issue_view_columns` plugin.
 
     cd $REDMINE_ROOT
-    rm -rf plugins/redmine_issue_view_columns public/plugin_assets/redmine_issue_view_columns
+    rm -rf plugins/redmine_issue_view_columns public/assets/plugin_assets/redmine_issue_view_columns
 
 ## License
 

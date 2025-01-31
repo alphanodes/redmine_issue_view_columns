@@ -18,7 +18,7 @@ Redmine::Plugin.register :redmine_issue_view_columns do
   end
 
   project_module :issue_view_columns do
-    permission :manage_issue_view_columns, { projects: :settings, issue_view_columns: :update }, require: :member
+    permission :manage_issue_view_columns, { issue_view_columns: :update }, require: :member
   end
 
   settings default: loader.default_settings, partial: 'settings/issue_view_columns_settings'

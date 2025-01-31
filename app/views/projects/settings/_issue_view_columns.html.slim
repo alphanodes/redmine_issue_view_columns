@@ -13,7 +13,9 @@
 
       p = l :info_issue_view_columns_project_settings
 
-      = render_query_columns_selection build_query_for_project
+      #list-definition
+        .
+          = render_query_columns_selection build_query_for_project
 
       p
         em.info = l :info_issue_view_columns_without_columns

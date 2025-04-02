@@ -18,7 +18,7 @@ module IssueViewColumnsIssuesHelper
       tr_classes << " idnt idnt-#{level}" if level.positive?
 
       buttons = if manage_relations
-                  link_to l(:label_delete_link_to_subtask),
+                  link_to sprite_icon('link-break'),
                           issue_path({ id: child.id,
                                        issue: { parent_issue_id: '' },
                                        back_url: issue_path(issue.id),
@@ -64,7 +64,7 @@ module IssueViewColumnsIssuesHelper
 
       tr_classes = "hascontextmenu #{other_issue.css_classes} #{cycle 'odd', 'even'} #{relation.css_classes_for other_issue}"
       buttons = if manage_relations
-                  link_to l(:label_relation_delete),
+                  link_to sprite_icon('link-break'),
                           relation_path(relation),
                           remote: true,
                           method: :delete,

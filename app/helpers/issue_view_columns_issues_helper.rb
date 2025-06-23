@@ -4,7 +4,7 @@ module IssueViewColumnsIssuesHelper
   def render_descendants_tree(issue)
     columns_list = get_fields_for_project issue
     # no field defined, then use render from core redmine (or whatever by other plugins loaded before this)
-    return super if columns_list.count.zero?
+    return super if columns_list.none?
 
     # continue here if there are fields defined
     field_values = +''
@@ -54,7 +54,7 @@ module IssueViewColumnsIssuesHelper
   # Renders the list of related issues on the issue details view
   def render_issue_relations(issue, relations)
     columns_list = get_fields_for_project issue
-    return super if columns_list.count.zero?
+    return super if columns_list.none?
 
     manage_relations = User.current.allowed_to? :manage_issue_relations, issue.project
     s = table_start_for_relations columns_list
@@ -157,7 +157,7 @@ module IssueViewColumnsIssuesHelper
       next if first_cols.include? field
 
       proj_field = available_fields.select { |f| f.name.to_s == field }
-      subtask_fields << proj_field[0] if proj_field.count.positive?
+      subtask_fields << proj_field[0] if proj_field.any?
     end
 
     subtask_fields # this should be an array of QueryColumn

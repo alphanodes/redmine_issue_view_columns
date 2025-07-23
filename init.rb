@@ -12,7 +12,7 @@ Redmine::Plugin.register :redmine_issue_view_columns do
   requires_redmine version_or_higher: '6.0'
 
   begin
-    requires_redmine_plugin :additionals, version_or_higher: '4.0.0'
+    requires_redmine_plugin :additionals, version_or_higher: '4.1.0'
   rescue Redmine::PluginNotFound
     raise 'Please install additionals plugin (https://github.com/alphanodes/additionals)'
   end

@@ -49,18 +49,21 @@ module RedmineIssueViewColumns
   class ControllerTest < Redmine::ControllerTest
     include RedmineIssueViewColumns::TestHelper
     extend PluginFixturesLoader
+
     fixtures(*fixtures_list)
   end
 
   class TestCase < ActiveSupport::TestCase
     include RedmineIssueViewColumns::TestHelper
     extend PluginFixturesLoader
+
     fixtures(*fixtures_list)
   end
 
   class IntegrationTest < Redmine::IntegrationTest
     include RedmineIssueViewColumns::TestHelper
     extend PluginFixturesLoader
+
     fixtures(*fixtures_list)
   end
 end

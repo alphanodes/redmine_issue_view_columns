@@ -28,3 +28,14 @@ jobs:
     - name: Run Brakeman
       run: |
         bundle exec brakeman -5
+
+    - run: yarn install
+
+    - name: Run Stylelint
+      run: node_modules/.bin/stylelint assets/stylesheets/
+
+    - name: Run ESLint
+      run: node_modules/.bin/eslint assets/javascripts/
+
+    - name: Run MarkdownLint
+      run: node_modules/.bin/markdownlint README.md CHANGELOG.md

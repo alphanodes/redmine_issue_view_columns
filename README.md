@@ -16,9 +16,9 @@ Redmine plugin to customize shown columns in subtasks and related issues on issu
 
 ## Requirements
 
-* Redmine version >= 5.0
+* Redmine version = 6.0
 * Redmine Plugin: [additionals](https://github.com/alphanodes/additionals)
-* Ruby version >= 3.0
+* Ruby version >= 3.1
 
 ## Installation
 
@@ -26,7 +26,7 @@ Install `redmine_issue_view_columns` plugin for `Redmine`
 
     cd $REDMINE_ROOT
     git clone git://github.com/alphanodes/redmine_issue_view_columns.git plugins/redmine_issue_view_columns
-    git clone git://github.com/alphanodes/additionals.git plugins/additionals
+    git clone -b stable git://github.com/alphanodes/additionals.git plugins/additionals
     bundle config set --local without 'development test'
     bundle install
     bundle exec rake redmine:plugins:migrate RAILS_ENV=production

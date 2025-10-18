@@ -60,6 +60,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: AlphaNodes/additionals
+          ref: stable
           path: redmine/plugins/additionals
 
       - name: Checkout redmine_issue_view_columns

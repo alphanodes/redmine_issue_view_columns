@@ -9,7 +9,7 @@ Redmine::Plugin.register :redmine_issue_view_columns do
   author_url 'https://alphanodes.com/'
   description 'Customize shown columns in subtasks and related issues on issue page'
   version RedmineIssueViewColumns::VERSION
-  requires_redmine version_or_higher: '6.0'
+  requires_redmine version: '6.0'
 
   begin
     requires_redmine_plugin :additionals, version_or_higher: '4.1.0'
